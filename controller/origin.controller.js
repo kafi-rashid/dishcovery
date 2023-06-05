@@ -22,24 +22,21 @@ const callbackifyGetOrigin = callbackify(function(dishId, pageNumber, pageSize) 
 });
 
 const callbackifyUpdateOrigin = callbackify(function(dishId, updatedOrigin) {
-  console.log('dishId:', dishId);
-  console.log('updatedOrigin:', updatedOrigin);
   return Dish.findOneAndUpdate(
-    { _id: dishId, 'origin._id': updatedOrigin._id },
-    { $set: { 'origin.$': updatedOrigin } },
+    { _id: dishId },
+    { $set: { origin: updatedOrigin } },
     { new: true }
   );
 });
 
 const callbackifyPatchOrigin = callbackify(function(dishId, updatedOrigin) {
-  console.log('dishId:', dishId);
-  console.log('updatedOrigin:', updatedOrigin);
   return Dish.findOneAndUpdate(
-    { _id: dishId, 'origin._id': updatedOrigin._id },
-    { $set: updatedOrigin },
+    { _id: dishId, "origin._id": updatedOrigin._id },
+    { $set: { "origin.$": updatedOrigin } },
     { new: true }
   );
 });
+
 
 // CONTROLLERS
 

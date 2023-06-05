@@ -15,10 +15,8 @@ let response = {
 const callbackifyGetAllCategories = callbackify(function(dishId) {
   return Dish.findById(dishId)
     .select("category")
-    .exec()
-    .then(function(dish) {
-      return dish.category
-    });
+    .lean()
+    .exec();
 });
 
 const callbackifyAddCategory = callbackify(function(dishId, category) {
@@ -66,16 +64,16 @@ const getAllCategories = function(req, res) {
   if (req.query && req.query.pageSize) {
     pageSize = parseInt(req.query.pageSize, 10);
   }
-  callbackifyGetAllCategories(dishId, function(error, categories) {
+  callbackifyGetAllCategories(dishId, function(error, dish) {
     if (error) {
       status = 404;
       response["message"] = error;
       delete response["data"];
     } else {
-      if (categories.length > 0) {
+      if (dish.category && dish.category.length > 0) {
         status = 200;
-        response["message"] = "Total " + categories.length + " categories found";
-        response["data"] = categories;  
+        response["message"] = "Total " + dish.category.length + " categories found";
+        response["data"] = dish.category;  
       } else {
         status = 404;
         response["message"] = "No category found!";

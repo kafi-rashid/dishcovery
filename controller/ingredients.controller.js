@@ -13,23 +13,10 @@ let response = {
 // CALLBACKIFIERS
 
 const callbackifyGetAllIngredients = callbackify(function(dishId, pageNumber, pageSize) {
-  // let skip = (pageNumber - 1) * pageSize;
-  // const test = callbackify(function() {
-  //   return Dish.findById(dishId)
-  //   .select("ingredients")
-  //   .slice("ingredients", [skip, skip + pageSize])
-  //   .exec()
-  // });
-  // return test(function(error, dish) {
-  //   callbackify(dish.ingredients);
-  // });
-  let skip = (pageNumber - 1) * pageSize;
   return Dish.findById(dishId)
     .select("ingredients")
-    .exec()
-    .then(function(dish) {
-      return dish.ingredients
-    });
+    .lean()
+    .exec();
 });
 
 const callbackifyAddIngredient = callbackify(function(dishId, ingredient) {
@@ -74,16 +61,16 @@ const getAllIngredients = function(req, res) {
   if (req.query && req.query.pageSize) {
     pageSize = parseInt(req.query.pageSize, 10);
   }
-  callbackifyGetAllIngredients(dishId, pageNumber, pageSize, function(error, ingredients) {
+  callbackifyGetAllIngredients(dishId, pageNumber, pageSize, function(error, dish) {
     if (error) {
       status = 404;
       response["message"] = error;
       delete response["data"];
     } else {
-      if (ingredients.length > 0) {
+      if (dish.ingredients && dish.ingredients.length > 0) {
         status = 200;
-        response["message"] = "Total " + ingredients.length + " ingredients found";
-        response["data"] = ingredients;  
+        response["message"] = "Total " + dish.ingredients.length + " ingredients found";
+        response["data"] = dish.ingredients;  
       } else {
         status = 404;
         response["message"] = "No ingredient found!";

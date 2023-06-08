@@ -1,0 +1,24 @@
+:root {
+  --primary-dark: #ed7c2c;
+  --primary-light: #fa9746;
+  --theme-blue: #a1c2ff;
+  --theme-green: #63aa35;
+  --theme-red: #ff6565;
+  --theme-orange: #ffbb2e;
+  --theme-yellow: #ebeb08;
+  --theme-paste: #95afc0;
+  --header-height: 75px;
+  --sidebar-width: 220px;
+  --body-bg-color: #f2f7fb;
+  --font-xs: 10px;
+  --font-small: 12px;
+  --font-medium: 13px;
+  --font-large: 14px;
+  --font-xl: 15px;
+  --font-xxl: 17px;
+  --input-border-color: #dddddd;
+  --background-white: #fff;
+  --background-black: #000;
+  --color-black: #000;
+  --color-white: #fff;
+}

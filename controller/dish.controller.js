@@ -58,8 +58,7 @@ const getAllDishes = function(req, res) {
     } else {
       if (dish.length > 0) {
         status = 200;
-        response["message"] = "Total " + dish.length + " dish found";
-        response["data"] = dish;  
+        response = dish;  
       } else {
         status = 404;
         response["message"] = "No dish found!";
@@ -80,8 +79,7 @@ const getOneDish = function(req, res) {
     } else {
       if (dish) {
         status = 200;
-        response["message"] = "Dish found!";
-        response["data"] = dish;
+        response = dish;
       } else {
         status = 404;
         response["message"] = "Dish not found!";

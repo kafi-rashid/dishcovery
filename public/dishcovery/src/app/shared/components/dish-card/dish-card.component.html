@@ -1,0 +1,17 @@
+<div class="dish-card">
+  <img
+    [src]="'../../../../assets/images/dummy/'+dish.image"
+    class="mb-4"/>
+  <p class="dish-card-categories">
+    {{ getCategory(dish.category) }}
+  </p>
+  <p class="dish-card-title mt-3">{{ dish.title }}</p>
+  <p class="dish-card-meta mb-2">From {{ dish.origin.name }}</p>
+  <p class="dish-card-description mb-3">{{ dish.description }}</p>
+  <p class="dish-card-meta">Cooking time: {{ dish.cookingTime }} minutes</p>
+  <button
+    class="mt-4"
+    routerLink="/dish/{{ dish._id }}">
+    Take a Look
+  </button>
+</div>

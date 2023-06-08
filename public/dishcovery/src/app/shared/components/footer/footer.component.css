@@ -1,0 +1,12 @@
+.footer {
+  box-shadow: 0 0 10px #d2c6c6;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* border-top: thin dashed #d8e79a; */
+}
+
+.footer .copyright {
+  color: #000000;
+}

@@ -1,0 +1,48 @@
+.home-slider-wrapper {
+  display: flex;
+}
+
+.home-slider {
+  background-color: #ffea74;
+  border-radius: 15px;
+  padding: 40px;
+  padding-bottom: 0;
+  display: flex;
+  flex: 8;
+  justify-content: space-between;
+}
+
+.home-slider .title {
+  font-size: 40px;
+  font-weight: 700;
+  letter-spacing: -1px;
+  line-height: 1;
+}
+
+.home-slider button {
+  border-radius: 40px;
+  border: none;
+  background-color: rgb(216, 65, 65);
+  color: #fff;
+  padding: 10px 30px;
+  transition: 0.3s;
+}
+
+.home-slider button:hover {
+  background-color: rgb(155, 33, 33);
+}
+
+.home-slider img {
+  width: 100%;
+  max-width: 400px;
+  margin-bottom: -80px;
+}
+
+.home-sidebar {
+  background-color: #ff856b;
+  flex: 3;
+  margin-left: 20px;
+  border-radius: 15px;
+  padding: 40px;
+  color: #fff;
+}

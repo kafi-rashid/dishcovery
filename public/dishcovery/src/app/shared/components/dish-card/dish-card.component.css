@@ -1,0 +1,44 @@
+.dish-card {
+  background-color: #f8ecd5;
+  padding: 30px;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  margin-top: 30%;
+}
+
+.dish-card img {
+  width: 80%;
+  /* min-width: 180px; */
+  margin: 0 auto;
+  margin-top: -40%;
+}
+
+.dish-card-categories {
+  color: #e45050;
+  font-size: var(--font-small);
+}
+
+.dish-card-title {
+  font-weight: 600;
+}
+
+.dish-card-description {
+  color: #534c4c;
+  font-size: var(--font-small);
+}
+
+.dish-card-meta {
+  color: #726666;
+  font-size: var(--font-small);
+}
+
+.dish-card button {
+  border: none;
+  background-color: #d63c3c;
+  color: #fff;
+}
+
+.dish-card button:hover {
+  background-color: #af0909;
+}

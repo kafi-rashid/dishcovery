@@ -1,0 +1,35 @@
+<div class="header">
+  <div class="d-flex">
+    <div class="logo"
+      routerLink="/">
+      <img src="https://images.emojiterra.com/twitter/v13.1/512px/1f33f.png"/>
+      Dish<span>covery</span>
+    </div>
+    <div class="nav">
+      <button
+        routerLink="/"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }">
+        Home
+      </button>
+      <button
+        routerLink="/dishes"
+        routerLinkActive="active">
+        Dishes
+      </button>
+      <button
+        routerLink="/about"
+        routerLinkActive="active">
+        About
+      </button>
+    </div>
+  </div>
+  <div>
+    <input type="text" placeholder="Search recipe..." class="ml-5">
+  </div>
+  <div class="login">
+    <button>
+      Log In
+    </button>
+  </div>
+</div>

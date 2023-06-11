@@ -27,5 +27,6 @@ export class Dish {
   "servings": number;
   "image": string;
   "category": [Category];
-  "tags": [string]
+  "tags": [string];
+  "hitCount": number;
 }

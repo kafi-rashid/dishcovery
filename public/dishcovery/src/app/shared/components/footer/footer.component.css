@@ -1,12 +1,13 @@
 .footer {
-  box-shadow: 0 0 10px #d2c6c6;
   height: 60px;
   display: flex;
   justify-content: center;
   align-items: center;
-  /* border-top: thin dashed #d8e79a; */
+  background-color: #d3fa12;
+  border-radius: 15px 15px 0 0;
 }
 
 .footer .copyright {
   color: #000000;
+  font-size: var(--font-small);
 }

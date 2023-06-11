@@ -28,8 +28,13 @@
     <input type="text" placeholder="Search recipe..." class="ml-5">
   </div>
   <div class="login">
-    <button>
+    <button *ngIf="!isLoggedIn"
+      routerLink="/login">
       Log In
+    </button>
+    <button *ngIf="isLoggedIn"
+      (click)="logout()">
+      Log Out
     </button>
   </div>
 </div>

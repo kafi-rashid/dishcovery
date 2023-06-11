@@ -1,1 +1,61 @@
-<p>dish works!</p>
+<div class="row dish-wrapper pb-5">
+  <div class="col-md-6 dish-image">
+    <img [src]="'../../../../assets/images/dummy/'+dish.image"/>
+  </div>
+  <div class="col-md-6 dish-details">
+    <p class="title mt-4">{{ dish.title }}</p>
+
+    <p class="font-italic">{{ dish.description }} from <span class="font-weight-bold color-gray">{{ dish.origin.name }}</span></p>
+
+    <div class="dish-legend-wrapper mt-5">
+      <div class="dish-legend">
+        <span class="material-icons mb-2">timer</span>
+        <p>{{ dish.cookingTime }} mins to cook</p>
+      </div>
+  
+      <div class="dish-legend">
+        <span class="material-icons mb-2">supervised_user_circle</span>
+        <p>{{ dish.servings }} servings</p>
+      </div>
+  
+      <div class="dish-legend">
+        <span class="material-icons mb-2">category</span>
+        <p>{{ dish.ingredients.length }} ingredients</p>
+      </div>
+    </div>
+
+    <p class="sub-title mt-5 mb-5">How to cook</p>
+
+    <p>{{ dish.instructions }}</p>
+
+    <p class="sub-title mt-5 mb-5">Ingredients you need</p>
+    
+    <div class="dish-ingredients">
+      <div class="dish-ingredient"
+        *ngFor="let ingredient of dish.ingredients; let i = index;">
+        <span class="font-weight-bold">{{ i + 1 }}.&nbsp;&nbsp;&nbsp;{{ ingredient.name }}</span>&nbsp;{{ ingredient.description && "(" + ingredient.description + ")" }}
+        <p>{{ ingredient.quantity }}</p>
+      </div>
+    </div>
+
+    <div class="dish-categories mt-5">
+      <span class="font-weight-bold mr-2">
+        Category:
+      </span>
+      <p class="d-inline mr-2" 
+        *ngFor="let category of dish.category">
+        {{ category.name }}
+      </p>
+    </div>
+
+    <div class="dish-tags mt-2">
+      <span class="font-weight-bold mr-2">
+        Tag:
+      </span>
+      <p class="d-inline mr-2" 
+        *ngFor="let tag of dish.tags">
+        #{{ tag }}
+      </p>
+    </div>
+  </div>
+</div>

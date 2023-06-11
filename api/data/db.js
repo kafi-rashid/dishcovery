@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const callbackify = require("util").callbackify;
 require("dotenv").config();
 require("../models/dish.model.js");
+require("../models/user.model.js");
 
 const callbackifyMongooseConnectionClosed = callbackify(function() {
   return mongoose.connection.close();

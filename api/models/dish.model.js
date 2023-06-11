@@ -79,7 +79,8 @@ const dishSchema = mongoose.Schema({
       message: "At least one category is required"
     }
   },
-  tags: [String]
+  tags: [String],
+  hitCount: Number
 });
 
 mongoose.model("Dish", dishSchema, "Dish");

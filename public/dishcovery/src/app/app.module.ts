@@ -16,6 +16,7 @@ import { CardComponent } from './shared/components/card/card.component';
 import { DishesComponent } from './pages/dishes/dishes.component';
 import { DishComponent } from './pages/dish/dish.component';
 import { DishCardComponent } from './shared/components/dish-card/dish-card.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { DishCardComponent } from './shared/components/dish-card/dish-card.compo
   imports: [
     BrowserModule,
     HttpClientModule,
+    FormsModule,
     RouterModule.forRoot(AppRoutes, {
       scrollPositionRestoration: 'enabled'
     }),

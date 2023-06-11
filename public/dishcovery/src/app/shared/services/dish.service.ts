@@ -16,4 +16,12 @@ export class DishService {
     return this._http.get<Dish[]>(this.baseUrl);
   }
 
+  getDishById(dishId: string): Observable<Dish> {
+    return this._http.get<Dish>(this.baseUrl + "/" + dishId);
+  }
+
+  getDishCount(): Observable<any> {
+    return this._http.get<any>(this.baseUrl + "/count");
+  }
+
 }

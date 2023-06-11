@@ -1,0 +1,87 @@
+.dish-wrapper img {
+  width: 50vw;
+  margin-left: -10vw;
+  margin-top: -10vw;
+  position: fixed;
+  min-width: 400px;
+}
+
+.dish-wrapper .title {
+  font-size: calc(var(--font-xxl) * 2);
+  font-weight: 600;
+}
+
+.dish-wrapper .sub-title {
+  font-size: calc(var(--font-xxl) * 1.5);
+  color: #dfb727;
+  position: relative;
+}
+
+.dish-wrapper .sub-title::after {
+  content: "";
+  width: 50px;
+  height: 4px;
+  background-color: #dfb727;
+  position: absolute;
+  left: 0;
+  bottom: -5px;
+}
+
+.dish-legend-wrapper {
+  width: 80%;
+  max-width: 350px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.dish-wrapper .dish-legend {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+.dish-wrapper .dish-legend .material-icons {
+  font-size: calc(var(--font-xxl) * 2.5);
+  color: #d7c8c8;
+}
+
+.dish-wrapper .dish-legend .material-icons p {
+  font-size: calc(var(--font-xxl) * 3);
+  color: #c5b6b6;
+}
+
+.dish-ingredients {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.dish-ingredient {
+  flex: 0 0 calc(50% - 20px);
+  padding-right: 30px;
+  padding-bottom: 10px;
+}
+
+.dish-categories p,
+.dish-tags p {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .dish-image {
+    text-align: center;
+    padding: 50px;
+  }
+
+  .dish-image img {
+    position: unset;
+    margin: unset;
+  }
+}
+
+@media screen and (max-width: 500px) {
+   .dish-image img {
+    min-width: 90% !important;
+  }
+}

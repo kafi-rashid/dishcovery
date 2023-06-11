@@ -54,7 +54,7 @@ const callbackifyPatchCategory = callbackify(function(categoryId, updatedData) {
 
 // CONTROLLERS
 
-const getAllCategories = function(req, res) {
+const getCategoriesByDishId = function(req, res) {
   let pageNumber = 1;
   let pageSize = 10;
   let dishId = req.params.dishId;
@@ -175,8 +175,26 @@ const deleteOneCategory = function(req, res) {
   });
 };
 
+const getAllCategories = function(req, res) {
+  Dish.distinct("category.name")
+    .exec()
+    .then((categories) => {
+      status = 200;
+      response = categories;
+    })
+    .catch((error) => {
+      status = 500;
+      response["message"] = "Something went wrong!";
+      response["data"] = error;
+    })
+    .finally(() => {
+      res.status(status).json(response);
+    });
+}
+
 module.exports = {
   getAllCategories,
+  getCategoriesByDishId,
   addCategory,
   getOneCategory,
   updateCategory,

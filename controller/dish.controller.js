@@ -1,66 +1,58 @@
 const mongoose = require("mongoose");
-const callbackify = require("util").callbackify;
 
 const Dish = mongoose.model("Dish");
 
-let status = 200;
-let response = {
+const response = {
+  status: 200,
   message: null,
   data: null
 }
 
-// CALLBACKIFIERS
-
-const callbackifyAddDish = callbackify(function(dish) {
-  return Dish.create(dish, { new: true });
-});
-
-const callbackifyUpdateDish = callbackify(function(dishId, dish) {
-  return Dish.findByIdAndUpdate(dishId, dish, { new: true });
-});
-
-const callbackifyPatchDish = callbackify(function(dishId, dish) {
-  return Dish.findByIdAndUpdate(dishId, dish, { new: true });
-});
-
-const callbackifyDeleteDish = callbackify(function(dishId) {
-  return Dish.findByIdAndDelete(dishId);
-});
-
-
-// CONTROLLERS
-
 const getAllDishes = function(req, res) {
   console.log("getAllDishes");
-  let pageNumber = 1;
-  let pageSize = 20;
-  if (req.query && req.query.pageNumber) {
-    pageNumber = parseInt(req.query.pageNumber, 10);
+  let offset = 0;
+  let count = 10;
+  let query = {};
+  if (req.query && req.query.offset) {
+    offset = parseInt(req.query.offset, 10);
   }
-  if (req.query && req.query.pageSize) {
-    pageSize = parseInt(req.query.pageSize, 10);
+  if (req.query && req.query.count) {
+    if (req.query.count > 10) {
+      response.status = 404;
+      response.message = "Can not fetch more than 10 dishes!";
+      response.data = null;
+      res.status(response.status).json(response);
+      return;
+    } else {
+      count = parseInt(req.query.count, 10);
+    }
   }
-  let skip = (pageNumber - 1) * pageSize;
-  return Dish.find()
-    .skip(skip)
-    .limit(pageSize)
+  if (req.query && req.query.search) {
+    query = { "title": { $regex: new RegExp(req.query.search, "i") } }; 
+  }
+  console.log(query);
+  return Dish.find(query)
+    .skip(offset)
+    .limit(count)
+    .exec()
     .then((dish) => {
       if (dish.length > 0) {
-        status = 200;
-        response = dish;  
+        response.status = 200;
+        response.message = dish.length + " dish found!";
+        response.data = dish;  
       } else {
-        status = 404;
-        response["message"] = "No dish found!";
-        delete response["data"];
+        response.status = 404;
+        response.message = "No dish found!";
+        response.data = null;
       }
     })
     .catch((error) => {
-      status = 500;
-      response["message"] = error;
-      delete response["data"];
+      response.status = 500;
+      response.message = error;
+      response.data = null;
     })
     .finally(() => {
-      res.status(status).json(response);
+      res.status(response.status).json(response);
     })
 }
 
@@ -68,102 +60,138 @@ const getOneDish = function(req, res) {
   return Dish.findById(req.params.dishId)
     .then((dish) => {
       if (dish) {
-        status = 200;
-        response = dish;
+        response.status = 200;
+        response.message = "Dish found!";
+        response.data = dish;
       } else {
-        status = 404;
-        response["message"] = "Dish not found!";
-        delete response["data"];
+        response.status = 404;
+        response.message = "Dish not found!";
+        response.data = null;
       }
     })
     .catch((error) => {
-      status = 404;
-      response["message"] = error;
-      delete response["data"];
+      response.status = 404;
+      response.message = error;
+      response.data = null;
     })
     .finally(() => {
-      res.status(status).json(response);
+      res.status(response.status).json(response);
     });
 }
 
 const addDish = function(req, res) {
-  callbackifyAddDish(req.body, function(error, acknowledgement) {
-    if (error) {
-      status = 500;
-      response["message"] = error;
-      delete response["data"];
-    } else {
-      status = 200;
-      response["message"] = acknowledgement;
-    }
-    res.status(status).json(response);
-  })
+  Dish.create(req.body, { new: true })
+    .then((dish) => {
+      response.status = 200;
+      response.message = "Dish has been added!";
+      response = dish;
+    })
+    .catch((error) => {
+      response.status = 500;
+      response.message = error;
+      response.data = null;
+    })
+    .finally(() => {
+      res.status(200).json(response);
+    });
 }
 
 const updateDish = function(req, res) {
   const dishId = req.params.dishId;
   const dish = req.body;
-  callbackifyUpdateDish(dishId, dish, function(error, updatedDish) {
-    if (error) {
-      status = 500;
-      response["message"] = error;
-      delete response["data"];
-    } else {
-      status = 200;
-      response["message"] = "Dish updated successfully!";
-      response["data"] = updatedDish;
-    }
-    res.status(status).json(response);
-  });
+  Dish.findByIdAndUpdate(dishId, dish, { new: true })
+    .then((dish) => {
+      if (dish) {
+        response.status = 200;
+        response.message = "Dish updated successfully!";
+        response.data = dish;
+      } else {
+        response.status = 404;
+        response.message = "Dish not found!";
+        response.data = null;
+        res.status(response.status).json(response);
+        return;
+      }
+    })
+    .catch((error) => {
+      response.status = 500;
+      response.message = error;
+      response.data = null;
+    })
+    .finally(() => {
+      res.status(response.status).json(response);
+    });
 };
 
 const patchDish = function(req, res) {
   const dishId = req.params.dishId;
   const dish = req.body;
-  callbackifyPatchDish(dishId, dish, function(error, patchedDish) {
-    if (error) {
-      status = 500;
-      response["message"] = error;
-      delete response["data"];
-    } else {
-      status = 200;
-      response["message"] = "Dish patched successfully!";
-      response["data"] = patchedDish;
-    }
-    res.status(status).json(response);
-  });
+  Dish.findByIdAndUpdate(dishId, dish, { new: true })
+    .then((dish) => {
+      if (dish) {
+        response.status = 200;
+        response.message = "Dish updated successfully!";
+        response.data = dish;
+      } else {
+        response.status = 404;
+        response.message = "Dish not found!";
+        response.data = null;
+        res.status(response.status).json(response);
+        return;
+      }
+    })
+    .catch((error) => {
+      response.status = 500;
+      response.message = error;
+      response.data = null;
+    })
+    .finally(() => {
+      res.status(response.status).json(response);
+    });
 };
 
 const deleteDish = function(req, res) {
-  callbackifyDeleteDish(req.params.dishId, function(error, deletedDish) {
-    if (error) {
-      status = 404;
-      response["message"] = error;
-      delete response["data"];
-    } else {
-      status = 200;
-      response["message"] = "Dish deleted successfully!";
-      response["data"] = deletedDish;
-    }
-    res.status(status).json(response);
-  });
+  Dish.findByIdAndDelete(dishId)
+    .then((dish) => {
+      if (dish) {
+        response.status = 204;
+        response.message = "Dish deleted successfully!";
+        response.data = dish;
+      } else {
+        response.status = 404;
+        response.message = error;
+        response.data = null;
+      }
+    })
+    .catch((error) => {
+      response.status = 500;
+      response.message = error;
+      response.data = null;
+    })
+    .finally(() => {
+      res.status(response.status).json(response);
+    });
 };
 
 const getCount = function(req, res) {
-  console.log("getCount");
-  Dish.find()
+  let query = {};
+  if (req.query && req.query.search) {
+    query = { "title": { $regex: new RegExp(req.query.search, "i") } }; 
+  }
+  Dish.find(query)
     .count()
     .then((count) => {
-      status = 200;
-      response = count;
+      response.status = 200;
+      response.message = null;
+      response.data = count;
     })
     .catch((error) => {
-      status = 500;
-      response["message"] = "Something went wrong!";
-      response["data"] = error;
+      response.status = 500;
+      response.message = "Something went wrong!";
+      response.data = error;
     })
     .finally(() => {
-      res.status(status).json(response);
+      res.status(response.status).json(response);
     });
 }
 

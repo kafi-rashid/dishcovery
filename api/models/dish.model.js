@@ -80,7 +80,8 @@ const dishSchema = mongoose.Schema({
     }
   },
   tags: [String],
-  hitCount: Number
+  hitCount: Number,
+  isPopular: Boolean,
 });
 
 mongoose.model("Dish", dishSchema, "Dish");

@@ -3,8 +3,10 @@
   justify-content: center;
   align-items: center;
   height: calc(100vh - 160px);
+  margin-top: 80px !important;
+  margin-bottom: 0 !important;
   position: relative;
-  padding-left: 40vh;
+  padding-left: 35vw;
 }
 
 .login-div {
@@ -13,14 +15,16 @@
   padding: 50px;
   border-radius: 15px;
   background-color: rgb(228, 252, 255);
+  z-index: 1;
 }
 
 .login-container img {
-  position: absolute;
-  left: -40vh;
-  top: 0;
-  height: 80vh;
+  position: fixed;
+  left: -30vh;
+  bottom: -30vh;
+  height: 110vh;
   filter: opacity(0.6);
+  z-index: 0;
 }
 
 .login-container .title {

@@ -1,9 +1,13 @@
+.dish-wrapper {
+  position: relative;
+}
+
 .dish-wrapper img {
   width: 50vw;
+  min-width: 30vw;
   margin-left: -10vw;
   margin-top: -10vw;
   position: fixed;
-  min-width: 400px;
 }
 
 .dish-wrapper .title {

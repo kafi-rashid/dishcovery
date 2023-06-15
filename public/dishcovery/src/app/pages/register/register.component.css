@@ -1,0 +1,21 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 50px;
+}
+
+.register-div {
+  width: 100%;
+  max-width: 450px;
+  padding: 50px;
+  border-radius: 15px;
+  background-color: rgb(228, 252, 255, 0.7);
+  backdrop-filter: blur(10px);
+}
+
+.register-container .title {
+  font-size: calc(var(--font-xxl) * 1.3);
+  font-weight: 500;
+  color: rgb(111, 129, 34);
+}

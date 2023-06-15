@@ -29,4 +29,11 @@ export class Dish {
   "category": [Category];
   "tags": [string];
   "hitCount": number;
+  "isPopular": boolean;
+}
+
+export class Response {
+  "status": number;
+  "message": string;
+  "data": any;
 }

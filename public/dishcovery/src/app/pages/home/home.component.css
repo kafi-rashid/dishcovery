@@ -11,7 +11,7 @@
   display: flex;
   flex: 8;
   justify-content: space-between;
-  min-height: 370px;
+  min-height: 390px;
 }
 
 .home-slider .title {
@@ -23,7 +23,8 @@
 
 .slider-description {
   width: 100%;
-  max-width: 300px;
+  max-width: 400px;
+  font-size: calc(var(--font-medium) * 1.1);
 }
 
 .home-slider button {
@@ -87,7 +88,7 @@
   top: -80px;
   left: -50px;
   opacity: 1;
-  color: #fff;
+  color: #e1fcf0;
 }
 
 /* .home-categories {
@@ -106,12 +107,3 @@
   border-radius: 10px;
   color: #000;
 } */
-
-.section-title {
-  font-size: calc(var(--font-xxl) * 2);
-  font-weight: 700;
-  text-align: center;
-  letter-spacing: -1px;
-  text-transform: uppercase;
-  color: #9ed604;
-}

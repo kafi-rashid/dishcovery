@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Dish } from 'src/app/shared/models/dishes.model';
+import { Dish, Response } from 'src/app/shared/models/dishes.model';
 import { DishService } from 'src/app/shared/services/dish.service';
 
 @Component({
@@ -27,8 +27,10 @@ export class DishComponent implements OnInit {
 
   getGame(dishId: string) {
     this._dishService.getDishById(dishId).subscribe({
-      next: (dish: Dish) => {
-        this.dish = dish;
+      next: (response: Response) => {
+        if (response.status === 200) {
+          this.dish = response.data;
+        }
       },
       error: (error) => {
         console.log("Component: Game", error);        

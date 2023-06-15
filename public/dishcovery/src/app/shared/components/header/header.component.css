@@ -7,12 +7,16 @@
   justify-content: space-between;
   position: fixed;
   z-index: 999;
-  background-color: #fff;
-  width: 100%;
+  top: 0;
+  background-color: var(--header-color);
+  width: calc(100% - 30px);
+  margin-left: 15px;
+  border-radius: 0 0 15px 15px;
+  backdrop-filter: blur(20px);
 }
 
 .header .logo {
-  font-size: 20px;
+  font-size: 24px;
   text-transform: lowercase;
   color: #00ef34;
   margin-right: 50px;
@@ -50,17 +54,26 @@
 
 .header input {
   border: none;
-  background-color: #f1e9e9;
+  background-color: #fff;
   min-width: 400px;
+  border-radius: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
-.header button.active {
+.header .nav button.active {
   color: #04c52e;
   border-bottom: 4px solid #00ef34 !important;
 }
 
-.header .login button {
-  background-color: #5887ce;
-  color: #fff;
-  border: none;
+.header .auth {
+  display: flex;
+  flex-direction: row;
+}
+
+.header .auth button {
+  border-radius: 20px;
+  width: auto;
+  padding-left: 20px;
+  padding-right: 20px;
 }

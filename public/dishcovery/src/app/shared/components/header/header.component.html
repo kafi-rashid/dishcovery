@@ -6,33 +6,43 @@
       Dish<span>covery</span>
     </div>
     <div class="nav">
-      <button
-        routerLink="/"
+      <button routerLink="/"
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: true }">
         Home
       </button>
-      <button
-        routerLink="/dishes"
+      <button routerLink="/dishes"
         routerLinkActive="active">
         Dishes
       </button>
-      <button
-        routerLink="/about"
+      <button routerLink="/about"
         routerLinkActive="active">
         About
       </button>
     </div>
   </div>
   <div>
-    <input type="text" placeholder="Search recipe..." class="ml-5">
+    <form #searchForm="ngForm" (ngSubmit)="searchDish()">
+      <input type="text"
+        class="form-control"
+        placeholder="Search recipe..."
+        [(ngModel)]="search"
+        [ngModelOptions]="{ standalone: true }">
+    </form>
   </div>
-  <div class="login">
+  <div class="auth">
     <button *ngIf="!isLoggedIn"
+      class="mr-3 form-control btn-warning"
+      routerLink="/register">
+      Sign Up
+    </button>
+    <button *ngIf="!isLoggedIn"
+      class="form-control btn-primary"
       routerLink="/login">
       Log In
     </button>
     <button *ngIf="isLoggedIn"
+      class="form-control btn-danger"
       (click)="logout()">
       Log Out
     </button>

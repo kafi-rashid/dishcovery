@@ -1,13 +1,40 @@
 .footer {
-  height: 60px;
+  height: 80px;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  background-color: #d3fa12;
+  background-color: var(--footer-color);
   border-radius: 15px 15px 0 0;
+  padding-left: 30px;
+  padding-right: 30px;
+  width: calc(100% - 30px);
+  margin-left: 15px;
+  position: relative;
+  z-index: 1;
 }
 
 .footer .copyright {
-  color: #000000;
+  color: #646363;
   font-size: var(--font-small);
+}
+
+.footer .logo {
+  font-size: 18px;
+  text-transform: lowercase;
+  color: #00ef34;
+  margin-right: 50px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.footer .logo span {
+  font-size: 18px;
+  display: inline-block;
+  color: #01aa25;
+  font-weight: 200;
+}
+
+.footer .logo img {
+  width: 22px;
+  margin-top: -3px;
 }

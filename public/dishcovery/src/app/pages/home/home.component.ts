@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Dish } from 'src/app/shared/models/dishes.model';
+import { Dish, Response } from 'src/app/shared/models/dishes.model';
 import { CategoryService } from 'src/app/shared/services/category.service';
 import { DishService } from 'src/app/shared/services/dish.service';
 
@@ -14,6 +14,8 @@ export class HomeComponent implements OnInit {
   activeIndex: number = 0;
   dishCount: number = 0;
   categories: string[] = [];
+  offset: number = 0;
+  count: number = 8;
 
   constructor(private _dishService: DishService,
     private _categoryService: CategoryService) {}
@@ -31,9 +33,10 @@ export class HomeComponent implements OnInit {
   }
 
   getDishes() {
-    this._dishService.getDishes().subscribe({
-      next: (dishes: Dish[]) => {
-        this.dishes = dishes;        
+    let query: string = "?offset=" + this.offset + "&count=" + this.count;
+    this._dishService.getDishes(query).subscribe({
+      next: (response: Response) => {
+        this.dishes = response.data;        
       },
       error: (error) => {
         console.log("Component: Dishes", error);
@@ -42,9 +45,9 @@ export class HomeComponent implements OnInit {
   }
 
   getDishCount() {
-    this._dishService.getDishCount().subscribe({
+    this._dishService.getDishCount("").subscribe({
       next: (response: any) => {
-        this.dishCount = response;        
+        this.dishCount = response.data;
       },
       error: (error) => {
         console.log("Component: Dishes", error);

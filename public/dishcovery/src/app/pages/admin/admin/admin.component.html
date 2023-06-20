@@ -1,0 +1,25 @@
+<div class="col-md-12 container">
+    
+  <div class="page-title">
+    Admin Panel
+  </div>
+  <div class="admin-wrapper">
+
+    <div class="admin-nav">
+      <button routerLink="/admin/dishes"
+        routerLinkActive="active">
+        Dishes
+      </button>
+      <br/>
+      <button routerLink="/admin/users"
+        routerLinkActive="active">
+        Users
+      </button>
+    </div>
+  
+    <div class="admin-content border">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+
+</div>

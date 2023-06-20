@@ -1,0 +1,4 @@
+.dish-details .title {
+  font-size: calc(var(--font-medium) * 2);
+  font-weight: 500;
+}

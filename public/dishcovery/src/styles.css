@@ -1,5 +1,6 @@
-@import url("./assets/css/Root.css");
+@import url("./assets/css/root.css");
 @import url("./assets/css/font.css");
+@import url("./assets/css/table.css");
 @import 'material-icons/iconfont/material-icons.css';
 
 #root {
@@ -43,6 +44,12 @@ button {
   transition: 0.3s;
 }
 
+.btn-sm {
+  min-height: unset;
+  padding: 4px 8px !important;
+  font-size: var(--font-small);
+}
+
 .wrapper {
   min-height: calc(100vh - 80px);
   white-space: pre-line;
@@ -82,6 +89,10 @@ button {
   width: 50px !important;
 }
 
+.w-100px {
+  width: 100px !important;
+}
+
 .w-400px {
   width: 100% !important;
   max-width: 400px;
@@ -100,8 +111,9 @@ button {
 }
 
 .form-group input,
+textarea,
 .btn {
-  border-radius: 8px;
+  border-radius: 8px !important;
   padding-left: 15px;
   padding-right: 15px;
   /* height: 40px; */
@@ -128,4 +140,22 @@ button:disabled {
 
 .border {
   border: thin dashed red;
+}
+
+.delete-row {
+  width: 38px;
+  height: 38px;
+  padding: 0;
+}
+
+.has-radius {
+  border-radius: 30px !important;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.flex-stretch {
+  /* display: flex; */
+  /* align-items: stretch; */
+  /* justify-content: stretch; */
 }

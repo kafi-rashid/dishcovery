@@ -1,42 +1,32 @@
 <div class="col-md-12 container register-container">
-
-  <form #registerForm="ngForm" class="register-div" (ngSubmit)="onSubmit(registerForm)">
-
+  <form [formGroup]="registerForm" class="register-div" (ngSubmit)="onSubmit()">
     <p class="title mb-1">Join Now</p>
     <p class="mb-4">and get access to exclusive stuffs!</p>
 
     <div class="form-group">
-      <label for="username">Full Name</label>
+      <label for="fullName">Full Name</label>
       <input type="text"
-        autocomplete="off" 
         class="form-control"
-        id="username"
-        aria-describedby="usernameHelp"
-        placeholder="Enter your username"
-        [(ngModel)]="username"
-        name="username"
-        required #usernameInput="ngModel">
-      <small id="usernameHelp"
+        placeholder="Enter your full name"
+        [readOnly]="isLoading"
+        formControlName="fullName">
+      <small
         class="form-text text-muted"
-        *ngIf="usernameInput.invalid && (usernameInput.dirty || usernameInput.touched)">
-        Username is required.
+        *ngIf="registerForm.get('fullName')?.invalid && (registerForm.get('fullName')?.dirty || registerForm.get('fullName')?.touched)">
+        Full name is required.
       </small>
     </div>
 
     <div class="form-group">
       <label for="username">Username</label>
       <input type="text"
-        autocomplete="off" 
         class="form-control"
-        id="username"
-        aria-describedby="usernameHelp"
         placeholder="Enter your username"
-        [(ngModel)]="username"
-        name="username"
-        required #usernameInput="ngModel">
-      <small id="usernameHelp"
+        [readOnly]="isLoading"
+        formControlName="username">
+      <small
         class="form-text text-muted"
-        *ngIf="usernameInput.invalid && (usernameInput.dirty || usernameInput.touched)">
+        *ngIf="registerForm.get('username')?.invalid && (registerForm.get('username')?.dirty || registerForm.get('username')?.touched)">
         Username is required.
       </small>
     </div>
@@ -45,42 +35,42 @@
       <label for="password">Password</label>
       <input type="password"
         class="form-control"
-        id="password"
-        aria-describedby="passwordHelp"
         placeholder="Enter password"
-        [(ngModel)]="password"
-        name="password"
-        autocomplete="off"
-        required #passwordInput="ngModel">
-      <small id="passwordHelp"
+        [readOnly]="isLoading"
+        formControlName="password"
+        autocomplete="off">
+      <small
         class="form-text text-muted"
-        *ngIf="passwordInput.invalid && (passwordInput.dirty || passwordInput.touched)">
+        *ngIf="registerForm.get('password')?.invalid && (registerForm.get('password')?.dirty || registerForm.get('password')?.touched)">
         Password is required.
       </small>
     </div>
 
     <div class="form-group">
-      <label for="password">Confirm Password</label>
+      <label for="confirmPassword">Confirm password</label>
       <input type="password"
         class="form-control"
-        id="password"
-        aria-describedby="passwordHelp"
-        placeholder="Enter password"
-        [(ngModel)]="password"
-        name="password"
-        autocomplete="off"
-        required #passwordInput="ngModel">
-      <small id="passwordHelp"
+        placeholder="Enter password again"
+        [readOnly]="isLoading"
+        formControlName="confirmPassword"
+        autocomplete="off">
+      <small
         class="form-text text-muted"
-        *ngIf="passwordInput.invalid && (passwordInput.dirty || passwordInput.touched)">
-        Password is required.
+        *ngIf="registerForm.get('confirmPassword')?.invalid && (registerForm.get('confirmPassword')?.dirty || registerForm.get('confirmPassword')?.touched)">
+        Confirm password should match password.
       </small>
     </div>
 
-    <div *ngIf="isLoginFailed" class="mt-3 mb-4 text-center color-red">
-      Username or password doesn't match!
+    <div class="d-flex align-items-center">
+      <button type="submit" 
+        class="btn btn-success text-nowrap"
+        [disabled]="registerForm.invalid || isLoading">
+        {{ isLoading ? "Please Wait..." : "Sign Up" }}
+      </button>
+      <div class="ml-4">
+        <p>{{ message }}</p>
+      </div>
     </div>
 
-    <button type="submit" class="btn btn-success">Sign Up</button>
   </form>
 </div>

@@ -1,12 +1,5 @@
 const mongoose = require('mongoose');
 
-const originSchema = mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, "Origin name is required"]
-  }
-});
-
 const categorySchema = mongoose.Schema({
   name: {
     type: String,
@@ -33,7 +26,7 @@ const dishSchema = mongoose.Schema({
     required: [true, "Title is required"]
   },
   origin: {
-    type: originSchema,
+    type: String,
     required: true
   },
   description: {

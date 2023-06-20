@@ -21,11 +21,11 @@ export class DishComponent implements OnInit {
   ngOnInit(): void {
     this.dishId = this._activatedRoute.snapshot.params["dishId"];
     if (this.dishId) {
-      this.getGame(this.dishId);
+      this.getDish(this.dishId);
     }
   }
 
-  getGame(dishId: string) {
+  getDish(dishId: string) {
     this._dishService.getDishById(dishId).subscribe({
       next: (response: Response) => {
         if (response.status === 200) {
@@ -33,7 +33,7 @@ export class DishComponent implements OnInit {
         }
       },
       error: (error) => {
-        console.log("Component: Game", error);        
+        console.log("Component: Dish", error);        
       }
     });
   }

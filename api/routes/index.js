@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const dishController = require("../../controller/dish.controller");
 const categoryController = require("../../controller/category.controller");
-const originController = require("../../controller/origin.controller");
+// const originController = require("../../controller/origin.controller");
 const ingredientsController = require("../../controller/ingredients.controller");
 const userController = require("../../controller/user.controller");
 
@@ -38,10 +38,10 @@ router.route("/dishes/:dishId/categories/:categoryId")
   .patch(categoryController.patchCategory)
   .delete(categoryController.deleteOneCategory);
 
-router.route("/dishes/:dishId/origin") 
-  .get(originController.getOrigin)
-  .put(originController.updateOrigin)
-  .patch(originController.patchOrigin);
+// router.route("/dishes/:dishId/origin") 
+//   .get(originController.getOrigin)
+//   .put(originController.updateOrigin)
+//   .patch(originController.patchOrigin);
 
 router.route("/users")
   .get(userController.getUsers)

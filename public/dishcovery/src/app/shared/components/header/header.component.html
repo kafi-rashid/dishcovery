@@ -31,6 +31,12 @@
     </form>
   </div>
   <div class="auth">
+    <button *ngIf="isLoggedIn"
+      routerLink="/admin"
+      class="mr-3"
+      routerLinkActive="active">
+      Manage
+    </button>
     <button *ngIf="!isLoggedIn"
       class="mr-3 form-control btn-warning"
       routerLink="/register">

@@ -1,37 +1,34 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { User } from '../models/user.model';
-import { Observable, of } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { Response } from '../models/dishes.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  baseUrl:string = "http://localhost:3000/auth";
-  isLoggedIn: boolean = false;
+  baseUrl: string = "http://localhost:3000/auth";
+  private loggedInStatus = new BehaviorSubject<boolean>(this.getLoggedInStatusFromLocalStorage());
 
-  constructor(private _http: HttpClient) { }
+  constructor(private _http: HttpClient) {}
 
-  auth(user: User): Observable<User> {
-    return this._http.post<User>(this.baseUrl, user);
-  }
-  
-  getAuthState(): Observable<boolean> {
-    if (localStorage.getItem("isLoggedIn")) {
-      return of(true);
-    } else {
-      return of(false);
-    }
+  auth(user: User): Observable<Response> {
+    return this._http.post<Response>(this.baseUrl, user);
   }
 
   setAuthState(state: boolean) {
     localStorage.setItem("isLoggedIn", state.toString());
-    this.isLoggedIn = state;
+    this.loggedInStatus.next(state); // Emit the updated status
   }
 
-  loggedIn() {
-    return this.isLoggedIn;
+  getLoggedInStatus(): Observable<boolean> {
+    return this.loggedInStatus.asObservable();
   }
 
+  private getLoggedInStatusFromLocalStorage(): boolean {
+    const status = localStorage.getItem("isLoggedIn");
+    return status === "true";
+  }
 }

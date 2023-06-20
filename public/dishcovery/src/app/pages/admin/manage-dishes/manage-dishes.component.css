@@ -1,0 +1,12 @@
+table .font-weight-bold {
+  font-weight: 500 !important;
+}
+
+.flex-stretch {
+  flex: 1;
+}
+
+.flex-stretch button {
+  white-space: nowrap;
+  width: auto;
+}

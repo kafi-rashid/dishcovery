@@ -1,0 +1,166 @@
+<div class="col-md-12 admin-content dish-details">
+  <div class="row">
+
+    <div class="mb-4">
+      <p class="title">Dish Details</p>
+    </div>
+
+    <form [formGroup]="dishForm" (ngSubmit)="onSubmit()" class="dish-form row">
+
+      <div class="col-md-6">
+        <div class="row">
+
+          <div class="form-group col-md-12">
+            <label for="title">Title</label>
+            <input type="text" class="form-control" id="title" placeholder="Enter the dish title" formControlName="title">
+            <small class="form-text text-muted" *ngIf="dishForm.get('title')?.invalid && (dishForm.get('title')?.dirty || dishForm.get('title')?.touched)">
+              Title is required.
+            </small>
+          </div>
+
+          <div class="form-group col-md-12">
+            <label for="title">Origin</label>
+            <input type="text" class="form-control" id="origin" placeholder="Enter the origin" formControlName="origin">
+            <small class="form-text text-muted" *ngIf="dishForm.get('origin')?.invalid && (dishForm.get('origin')?.dirty || dishForm.get('origin')?.touched)">
+              Origin is required.
+            </small>
+          </div>
+          
+          <div class="form-group col-md-12">
+            <label for="description">Description</label>
+            <textarea class="form-control" id="description" rows="4" placeholder="Enter the dish description" formControlName="description"></textarea>
+            <small class="form-text text-muted" *ngIf="dishForm.get('description')?.invalid && (dishForm.get('description')?.dirty || dishForm.get('description')?.touched)">
+              Description is required.
+            </small>
+          </div>
+
+          <div class="form-group col-md-12">
+            <label for="instructions">Instructions</label>
+            <textarea class="form-control" id="instructions" rows="4" placeholder="Enter the dish instructions" formControlName="instructions"></textarea>
+            <small class="form-text text-muted" *ngIf="dishForm.get('instructions')?.invalid && (dishForm.get('instructions')?.dirty || dishForm.get('instructions')?.touched)">
+              Instructions are required.
+            </small>
+          </div>
+
+          <div class="form-group col-md-6">
+            <label for="cookingTime">Cooking Time (minutes)</label>
+            <input type="number" class="form-control" id="cookingTime" placeholder="Enter the cooking time" formControlName="cookingTime">
+            <small class="form-text text-muted" *ngIf="dishForm.get('cookingTime')?.invalid && (dishForm.get('cookingTime')?.dirty || dishForm.get('cookingTime')?.touched)">
+              Cooking Time is required.
+            </small>
+          </div>
+
+          <div class="form-group col-md-6">
+            <label for="servings">Servings</label>
+            <input type="number" class="form-control" id="servings" placeholder="Enter the number of servings" formControlName="servings">
+            <small class="form-text text-muted" *ngIf="dishForm.get('servings')?.invalid && (dishForm.get('servings')?.dirty || dishForm.get('servings')?.touched)">
+              Servings is required.
+            </small>
+          </div>
+
+          <div class="form-group col-md-12">
+            <label for="image">Image URL</label>
+            <input type="text" class="form-control" id="image" placeholder="Enter the dish image URL" formControlName="image">
+            <small class="form-text text-muted" *ngIf="dishForm.get('image')?.invalid && (dishForm.get('image')?.dirty || dishForm.get('image')?.touched)">
+              Image URL is required.
+            </small>
+          </div>
+
+          <div class="form-group col-md-12">
+            <label for="tags">Tags</label>
+            <input type="text" class="form-control" id="tags" placeholder="Enter tags for the dish (separated by commas)" formControlName="tags">
+            <small class="form-text text-muted" *ngIf="dishForm.get('tags')?.invalid && (dishForm.get('tags')?.dirty || dishForm.get('tags')?.touched)">
+              Tags are required.
+            </small>
+          </div>
+
+        </div>
+        
+
+        <div formArrayName="ingredients" class="row">
+          <div class="col-md-12">
+            <label for="tags">Ingredients</label>
+          </div>
+          <div class="form-group col-md-12" *ngFor="let ingredient of ingredients.controls; let i = index;">
+            <div [formGroupName]="i" class="d-flex">
+              <div class="form-group m-0 p-0 mr-3 flex-grow-1">
+                <!-- <label for="ingredientName{{i}}">Ingredient Name</label> -->
+                <input type="text" class="form-control" id="ingredientName{{i}}" placeholder="Ingredient name" formControlName="name">
+                <small class="form-text text-muted" *ngIf="ingredient.get('name')?.invalid && (ingredient.get('name')?.dirty || ingredient.get('name')?.touched)">
+                  Ingredient Name is required.
+                </small>
+              </div>
+
+              <div class="form-group m-0 p-0 mr-3 flex-grow-1">
+                <!-- <label for="ingredientDescription{{i}}">Ingredient Description</label> -->
+                <input type="text" class="form-control" id="ingredientDescription{{i}}" placeholder="Description" formControlName="description">
+                <small class="form-text text-muted" *ngIf="ingredient.get('description')?.invalid && (ingredient.get('description')?.dirty || ingredient.get('description')?.touched)">
+                  Ingredient Description is required.
+                </small>
+              </div>
+
+              <div class="form-group m-0 p-0 mr-3 w-100px">
+                <!-- <label for="ingredientQuantity{{i}}">Ingredient Quantity</label> -->
+                <input type="text" class="form-control" id="ingredientQuantity{{i}}" placeholder="Quantity" formControlName="quantity">
+                <small class="form-text text-muted" *ngIf="ingredient.get('quantity')?.invalid && (ingredient.get('quantity')?.dirty || ingredient.get('quantity')?.touched)">
+                  Ingredient Quantity is required.
+                </small>
+              </div>
+
+              <button class="btn btn-danger delete-row" (click)="removeIngredient(i)">✕</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-5">
+          <div class="col-md-12 text-center">
+            <button type="button" class="btn btn-warning" (click)="addIngredient()">Add Ingredient</button>
+          </div>
+        </div>
+
+        <div formArrayName="category" class="row">
+          <div class="col-md-12">
+            <label for="tags">Category</label>
+          </div>
+          <div class="form-group col-md-12" *ngFor="let category of category.controls; let i = index;">
+            <div [formGroupName]="i" class="d-flex">
+              <div class="form-group m-0 p-0 mr-3 flex-grow-1">
+                <!-- <label for="categoryName{{i}}">Category Name</label> -->
+                <input type="text" class="form-control" id="categoryName{{i}}" placeholder="Category name" formControlName="name">
+                <small class="form-text text-muted" *ngIf="category.get('name')?.invalid && (category.get('name')?.dirty || category.get('name')?.touched)">
+                  Category Name is required.
+                </small>
+              </div>
+
+              <div class="form-group m-0 p-0 mr-3 flex-grow-1">
+                <!-- <label for="categoryDescription{{i}}">Category Description</label> -->
+                <input type="text" class="form-control" id="categoryDescription{{i}}" placeholder="Category description" formControlName="description">
+                <small class="form-text text-muted" *ngIf="category.get('description')?.invalid && (category.get('description')?.dirty || category.get('description')?.touched)">
+                  Category Description is required.
+                </small>
+              </div>
+
+              <button class="btn btn-danger delete-row" (click)="removeCategory(i)">✕</button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="row mb-5">
+          <div class="col-md-12 text-center">
+            <button type="button" class="btn btn-warning" (click)="addCategory()">Add Category</button>
+          </div>
+        </div>
+    
+        <div class="form-group mt-4 d-flex align-items-center">
+          <input type="checkbox" class="form-check-input m-0" id="isPopular" formControlName="isPopular">
+          <label class="form-check-label ml-4" for="isPopular">Is Popular</label>
+        </div>
+
+        <button type="submit" class="btn btn-success d-block" [disabled]="dishForm.invalid || isLoading">Submit</button>
+
+      </div>
+    </form>
+
+  </div>
+
+</div>

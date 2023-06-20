@@ -6,6 +6,10 @@ import { RegisterComponent } from './pages/register/register.component';
 import { LoginComponent } from './pages/login/login.component';
 import { DishesComponent } from './pages/dishes/dishes.component';
 import { DishComponent } from './pages/dish/dish.component';
+import { AdminComponent } from './pages/admin/admin/admin.component';
+import { ManageDishesComponent } from './pages/admin/manage-dishes/manage-dishes.component';
+import { DishDetailsComponent } from './pages/admin/dish-details/dish-details.component';
+import { UsersComponent } from './pages/admin/users/users.component';
 
 export const AppRoutes: Routes = [
   {
@@ -15,31 +19,53 @@ export const AppRoutes: Routes = [
   },
   {
     path: 'login',
-    pathMatch: 'full',
     component: LoginComponent
   },
   {
     path: 'register',
-    pathMatch: 'full',
     component: RegisterComponent
   },
   {
     path: 'dishes',
-    pathMatch: 'full',
     component: DishesComponent
   },
   {
     path: 'dish/:dishId',
-    pathMatch: 'full',
     component: DishComponent
   },
   {
     path: 'about',
-    pathMatch: 'full',
     component: AboutComponent
   },
   {
+    path: 'admin',
+    component: AdminComponent,
+    children: [
+      {
+        path: '',
+        redirectTo: 'dishes',
+        pathMatch: 'full'
+      },
+      {
+        path: 'dishes',
+        component: ManageDishesComponent
+      },
+      {
+        path: 'dishes/add',
+        component: DishDetailsComponent
+      },
+      {
+        path: 'dishes/:dishId',
+        component: DishDetailsComponent
+      },
+      {
+        path: 'users',
+        component: UsersComponent
+      }
+    ]
+  },
+  {
     path: '**',
-    redirectTo: 'HomeComponent'
+    redirectTo: ''
   }
-]
+];

@@ -9,20 +9,24 @@ import { Router } from '@angular/router';
 })
 export class HeaderComponent implements OnInit {
 
-  isLoggedIn: boolean = this._authService.loggedIn();
+  isLoggedIn: boolean = false;
   search!: string;
 
-  constructor(private _authService: AuthService,
-    private _router: Router) {}
+  constructor(private _authService: AuthService, private _router: Router) {}
 
   logout() {
     localStorage.clear();
+    this._authService.setAuthState(false);
     this.isLoggedIn = false;
   }
 
   ngOnInit(): void {
-    this._authService.getAuthState().subscribe(state => {
-      this.isLoggedIn = state;
+    this.isLogIn();
+  }
+
+  isLogIn() {
+    this._authService.getLoggedInStatus().subscribe((status) => {
+      this.isLoggedIn = status;
     });
   }
 

@@ -5,11 +5,6 @@ export class Ingredient {
   "_id": string;
 }
 
-export class Origin {
-  "name": string;
-  "_id": string;
-}
-
 export class Category {
   "name": string;
   "description": string;
@@ -19,7 +14,7 @@ export class Category {
 export class Dish {
   "_id": string;
   "title": string;
-  "origin": Origin;
+  "origin": string;
   "description": string;
   "ingredients": [Ingredient];
   "instructions": string;

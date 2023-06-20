@@ -1,0 +1,51 @@
+<div class="col-md-12 admin-content">
+  <div class="row">
+
+    <div class="col-md-12 flex-stretch">
+      <input placeholder="Search dish..."
+        class="mr-3 form-control has-radius">
+      <button routerLink="/admin/dishes/add"
+        class="form-control has-radius">Add Dish</button>
+    </div>
+
+    <div class="col-md-12 table-sticky mt-4 ">
+      <table class="table mt-5">
+        <thead>
+          <tr>
+            <th width="50">SN.</th>
+            <th>Title</th>
+            <th>Category</th>
+            <th class="text-right">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let dish of dishes; let i = index;">
+            <td>{{ i + 1 }}</td>
+            <td class="font-weight-bold">{{ dish.title }}</td>
+            <td>{{ getCategory(dish.category) }}</td>
+            <td class="text-right">
+              <button class="btn btn-sm btn-danger"
+                routerLink="/admin/dishes/{{ dish._id }}">
+                Details
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="col-md-12 text-center mt-4">
+      <button class="btn-warning mr-3"
+        (click)="prev()"
+        [disabled]="disablePrev()">
+        ←&nbsp;&nbsp;&nbsp;Previous
+      </button>
+      <button class="btn-warning"
+        (click)="next()"
+        [disabled]="disableNext()">
+        Next&nbsp;&nbsp;&nbsp;→
+      </button>
+    </div>
+
+  </div>
+</div>

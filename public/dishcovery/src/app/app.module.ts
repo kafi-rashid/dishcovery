@@ -1,9 +1,11 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutes } from './app.routing';
+import { AuthenticationInterceptor } from './util/authentication.interceptor';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './pages/home/home.component';
@@ -16,7 +18,10 @@ import { CardComponent } from './shared/components/card/card.component';
 import { DishesComponent } from './pages/dishes/dishes.component';
 import { DishComponent } from './pages/dish/dish.component';
 import { DishCardComponent } from './shared/components/dish-card/dish-card.component';
-import { FormsModule } from '@angular/forms';
+import { ManageDishesComponent } from './pages/admin/manage-dishes/manage-dishes.component';
+import { DishDetailsComponent } from './pages/admin/dish-details/dish-details.component';
+import { AdminComponent } from './pages/admin/admin/admin.component';
+import { UsersComponent } from './pages/admin/users/users.component';
 
 @NgModule({
   declarations: [
@@ -30,17 +35,26 @@ import { FormsModule } from '@angular/forms';
     CardComponent,
     DishesComponent,
     DishComponent,
-    DishCardComponent
+    DishCardComponent,
+    ManageDishesComponent,
+    DishDetailsComponent,
+    AdminComponent,
+    UsersComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
     FormsModule,
+    ReactiveFormsModule,
     RouterModule.forRoot(AppRoutes, {
       scrollPositionRestoration: 'enabled'
     }),
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS, useClass: AuthenticationInterceptor, multi: true 
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

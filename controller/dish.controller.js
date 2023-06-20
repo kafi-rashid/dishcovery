@@ -8,8 +8,18 @@ const response = {
   data: null
 }
 
+const _setResponse = function(status, message, data = null) {
+  response.status  = status;
+  response.message  = message;
+  response.data  = data;
+}
+
+const _sendResponse = function(res) {
+  res.status(response.status)
+    .json(response);
+}
+
 const getAllDishes = function(req, res) {
-  console.log("getAllDishes");
   let offset = 0;
   let count = 10;
   let query = {};
@@ -18,10 +28,8 @@ const getAllDishes = function(req, res) {
   }
   if (req.query && req.query.count) {
     if (req.query.count > 10) {
-      response.status = 404;
-      response.message = "Can not fetch more than 10 dishes!";
-      response.data = null;
-      res.status(response.status).json(response);
+      _setResponse(404, "Can not fetch more than 10 dishes!", null);
+      _sendResponse(res);
       return;
     } else {
       count = parseInt(req.query.count, 10);
@@ -30,29 +38,22 @@ const getAllDishes = function(req, res) {
   if (req.query && req.query.search) {
     query = { "title": { $regex: new RegExp(req.query.search, "i") } }; 
   }
-  console.log(query);
   return Dish.find(query)
     .skip(offset)
     .limit(count)
     .exec()
     .then((dish) => {
       if (dish.length > 0) {
-        response.status = 200;
-        response.message = dish.length + " dish found!";
-        response.data = dish;  
+        _setResponse(200, dish.length + " dish found!", dish);
       } else {
-        response.status = 404;
-        response.message = "No dish found!";
-        response.data = null;
+        _setResponse(404, "No dish found!", null);
       }
     })
     .catch((error) => {
-      response.status = 500;
-      response.message = error;
-      response.data = null;
+      _setResponse(500, error, null);
     })
     .finally(() => {
-      res.status(response.status).json(response);
+      _sendResponse(res)
     })
 }
 
@@ -60,36 +61,26 @@ const getOneDish = function(req, res) {
   return Dish.findById(req.params.dishId)
     .then((dish) => {
       if (dish) {
-        response.status = 200;
-        response.message = "Dish found!";
-        response.data = dish;
+        _setResponse(200, "Dish found!", dish);
       } else {
-        response.status = 404;
-        response.message = "Dish not found!";
-        response.data = null;
+        _setResponse(404, "Dish not found!", null);
       }
     })
     .catch((error) => {
-      response.status = 404;
-      response.message = error;
-      response.data = null;
+      _setResponse(404, error, null);
     })
     .finally(() => {
-      res.status(response.status).json(response);
+      _sendResponse(res)
     });
 }
 
 const addDish = function(req, res) {
   Dish.create(req.body, { new: true })
     .then((dish) => {
-      response.status = 200;
-      response.message = "Dish has been added!";
-      response = dish;
+      _setResponse(200, "Dish has been added!", dish);
     })
     .catch((error) => {
-      response.status = 500;
-      response.message = error;
-      response.data = null;
+      _setResponse(500, error, null);
     })
     .finally(() => {
       res.status(200).json(response);
@@ -102,24 +93,18 @@ const updateDish = function(req, res) {
   Dish.findByIdAndUpdate(dishId, dish, { new: true })
     .then((dish) => {
       if (dish) {
-        response.status = 200;
-        response.message = "Dish updated successfully!";
-        response.data = dish;
+        _setResponse(200, "Dish updated successfully!", dish);
       } else {
-        response.status = 404;
-        response.message = "Dish not found!";
-        response.data = null;
-        res.status(response.status).json(response);
+        _setResponse(404, "Dish not found!", null);
+        _sendResponse(res)
         return;
       }
     })
     .catch((error) => {
-      response.status = 500;
-      response.message = error;
-      response.data = null;
+      _setResponse(500, error, null);
     })
     .finally(() => {
-      res.status(response.status).json(response);
+      _sendResponse(res)
     });
 };
 
@@ -129,24 +114,18 @@ const patchDish = function(req, res) {
   Dish.findByIdAndUpdate(dishId, dish, { new: true })
     .then((dish) => {
       if (dish) {
-        response.status = 200;
-        response.message = "Dish updated successfully!";
-        response.data = dish;
+        _setResponse(200, "Dish updated successfully!", dish);
       } else {
-        response.status = 404;
-        response.message = "Dish not found!";
-        response.data = null;
-        res.status(response.status).json(response);
+        _setResponse(404, "Dish not found!",);null;
+        _sendResponse(res)
         return;
       }
     })
     .catch((error) => {
-      response.status = 500;
-      response.message = error;
-      response.data = null;
+      _setResponse(500, error, null);
     })
     .finally(() => {
-      res.status(response.status).json(response);
+      _sendResponse(res)
     });
 };
 
@@ -154,22 +133,16 @@ const deleteDish = function(req, res) {
   Dish.findByIdAndDelete(dishId)
     .then((dish) => {
       if (dish) {
-        response.status = 204;
-        response.message = "Dish deleted successfully!";
-        response.data = dish;
+        _setResponse(204, "Dish deleted successfully!", dish);
       } else {
-        response.status = 404;
-        response.message = error;
-        response.data = null;
+        _setResponse(404, error, null);
       }
     })
     .catch((error) => {
-      response.status = 500;
-      response.message = error;
-      response.data = null;
+      _setResponse(500, error, null);
     })
     .finally(() => {
-      res.status(response.status).json(response);
+      _sendResponse(res)
     });
 };
 
@@ -181,17 +154,13 @@ const getCount = function(req, res) {
   Dish.find(query)
     .count()
     .then((count) => {
-      response.status = 200;
-      response.message = null;
-      response.data = count;
+      _setResponse(200, null, count);
     })
     .catch((error) => {
-      response.status = 500;
-      response.message = "Something went wrong!";
-      response.data = error;
+      _setResponse(500, "Something went wrong!", error);
     })
     .finally(() => {
-      res.status(response.status).json(response);
+      _sendResponse(res)
     });
 }
 

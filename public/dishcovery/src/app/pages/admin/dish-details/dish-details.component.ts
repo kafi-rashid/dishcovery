@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -18,7 +19,8 @@ export class DishDetailsComponent implements OnInit {
 
   constructor(private _formBuilder: FormBuilder,
     private _activatedRoute: ActivatedRoute,
-    private _dishService: DishService) {
+    private _dishService: DishService,
+    private _location: Location) {
 
     this.dishForm = this._formBuilder.group({
       _id: [''],
@@ -127,6 +129,10 @@ export class DishDetailsComponent implements OnInit {
 
   removeCategory(index: number) {
     this.category.removeAt(index);
+  }
+
+  goBack() {
+    this._location.back();
   }
 
 }

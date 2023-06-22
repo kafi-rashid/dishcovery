@@ -32,7 +32,6 @@ export class HeaderComponent implements OnInit {
 
   searchDish() {
     if (this.search && this.search.trim().length > 0) {
-      console.log(this.search);
       this._router.navigate(['dishes'], { queryParams: { search: this.search } });      
     }
   }

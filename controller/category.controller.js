@@ -1,195 +1,125 @@
 const mongoose = require("mongoose");
-const { promisify } = require("util");
-const callbackify = require("util").callbackify;
 
 const Dish = mongoose.model("Dish");
 
-let status = 200;
-let response = {
+const response = {
+  status: process.env.HTTP_RESPONSE_SUCCESS_CODE,
   message: null,
   data: null
 }
 
-// CALLBACKIFIERS
+const _setResponse = function(status, message, data = null) {
+  response.status  = parseInt(status, 10);
+  response.message  = message;
+  response.data  = data;
+}
 
-const callbackifyGetAllCategories = callbackify(function(dishId) {
-  return Dish.findById(dishId)
-    .select("category")
-    .lean()
-    .exec();
-});
-
-const callbackifyAddCategory = callbackify(function(dishId, category) {
-  return Dish.findByIdAndUpdate(dishId, { $push: { category: category } }, { new: true });
-});
-
-const callbackifyGetOneCategory = callbackify(function(categoryId) {
-  return Dish.findOne(
-    { "category._id": categoryId }, 
-    { "category.$": 1 }
-  );
-});
-
-const callbackifyUpdateCategory = callbackify(function(categoryId, updatedCategory) {
-  return Dish.findOneAndUpdate(
-    { "category._id": categoryId },
-    { $set: { "category.$": updatedCategory } }
-  );
-});
-
-const callbackifyDeleteOneCategory = callbackify(function(categoryId) {
-  return Dish.findOneAndUpdate(
-    { "category._id": categoryId },
-    { $pull: { category: { _id: categoryId } } }
-  );
-});
-
-const callbackifyPatchCategory = callbackify(function(categoryId, updatedData) {
-  return Dish.findOneAndUpdate(
-    { "category._id": categoryId },
-    { $set: updatedData }
-  );
-});
-
-
-// CONTROLLERS
+const _sendResponse = function(res) {
+  res.status(response.status)
+    .json(response);
+}
 
 const getCategoriesByDishId = function(req, res) {
-  let pageNumber = 1;
-  let pageSize = 10;
   let dishId = req.params.dishId;
-  if (req.query && req.query.pageNumber) {
-    pageNumber = parseInt(req.query.pageNumber, 10);
-  }
-  if (req.query && req.query.pageSize) {
-    pageSize = parseInt(req.query.pageSize, 10);
-  }
-  callbackifyGetAllCategories(dishId, function(error, dish) {
-    if (error) {
-      status = 404;
-      response["message"] = error;
-      delete response["data"];
-    } else {
+
+  const _validateDish = function(dish) {
+    return new Promise((resolve, reject) => {
       if (dish.category && dish.category.length > 0) {
-        status = 200;
-        response["message"] = "Total " + dish.category.length + " categories found";
-        response["data"] = dish.category;  
+        resolve(dish.category);
       } else {
-        status = 404;
-        response["message"] = "No category found!";
-        delete response["data"];
+        reject({
+          status: 404,
+          message: "No category found!",
+          data: null
+        });
       }
-    }
-    res.status(status).json(response);
-  })
+    })
+  }
+
+  Dish.findById(dishId)
+    .select("category")
+    .lean()
+    .exec()
+    .then((dish) => _validateDish(dish))
+    .then((categories) => _setResponse(200, "Total " + categories.length + " categories found", categories))
+    .catch((error) => _setResponse(500, error, null))
+    .finally(() => _sendResponse(res));
 }
 
 const addCategory = function(req, res) {
   const newCategory = req.body;
   const dishId = req.params.dishId;
-  callbackifyAddCategory(dishId, newCategory, function(error, updatedDish) {
-    if (error) {
-      status = 500;
-      response["message"] = error;
-      delete response["data"];
-    } else {
-      status = 200;
-      response["message"] = "Category added successfully!";
-      response["data"] = updatedDish;
-    }
-    res.status(status).json(response);
-  });
+  Dish.findByIdAndUpdate(dishId, { $push: { category: newCategory } }, { new: true })
+    .then((updatedDish) => _setResponse(200, "Category added successfully!", updatedDish))
+    .catch((error) => _setResponse(500, error, null))
+    .finally(() => _sendResponse(res));
 };
 
 const getOneCategory = function(req, res) {
-  callbackifyGetOneCategory(req.params.categoryId, function(error, category) {
-    if (error) {
-      status = 404;
-      response["message"] = error;
-      delete response["data"];
-    } else {
+  const _validateCategory = function(category) {
+    return new Promise((resolve, reject) => {
       if (category) {
-        status = 200;
-        response["message"] = "Category found!";
-        response["data"] = category;
+        resolve(category);
       } else {
-        status = 404;
-        response["message"] = "Category not found!";
-        delete response["data"];
+        reject({
+          status: 404,
+          message: "No category found!",
+          data: null
+        });
       }
-    }
-    res.status(status).json(response);
-  });
+    })
+  }
+  Dish.findOne(
+    { "category._id": req.params.categoryId }, 
+    { "category.$": 1 }
+  )
+  .then((category) => _validateCategory(category))
+  .then((category) => _setResponse(200, "Category found!", category))
+  .catch((error) => _setResponse(500, error, null))
+  .finally(() => _sendResponse(res));
 };
 
 const updateCategory = function(req, res) {
   const categoryId = req.params.categoryId;
   const updatedCategory = req.body;
-  
-  callbackifyUpdateCategory(categoryId, updatedCategory, function(error, updatedDish) {
-    if (error) {
-      status = 500;
-      response["message"] = error;
-      delete response["data"];
-    } else {
-      status = 200;
-      response["message"] = "Category updated successfully!";
-      response["data"] = updatedDish;
-    }
-    res.status(status).json(response);
-  });
+  Dish.findOneAndUpdate(
+    { "category._id": categoryId },
+    { $set: { "category.$": updatedCategory } }
+  )
+  .then((category) => _setResponse(200, "Category updated successfully!", category))
+  .catch((error) => _setResponse(500, error, null))
+  .finally(() => _sendResponse(res));
 };
 
 const patchCategory = function(req, res) {
   const categoryId = req.params.categoryId;
   const updatedData = req.body;
-
-  callbackifyPatchCategory(categoryId, updatedData, function(error, updatedDish) {
-    if (error) {
-      status = 500;
-      response["message"] = error;
-      delete response["data"];
-    } else {
-      status = 200;
-      response["message"] = "Category patched successfully!";
-      response["data"] = updatedDish;
-    }
-    res.status(status).json(response);
-  });
+  Dish.findOneAndUpdate(
+    { "category._id": categoryId },
+    { $set: updatedData }
+  )
+  .then((updatedDish) => _setResponse(200, "Category patched successfully!", updatedDish))
+  .catch((error) => _setResponse(500, error, null))
+  .finally(() => _sendResponse(res));
 };
 
 const deleteOneCategory = function(req, res) {
   const categoryId = req.params.categoryId;
-  
-  callbackifyDeleteOneCategory(categoryId, function(error, updatedDish) {
-    if (error) {
-      status = 500;
-      response["message"] = error;
-      delete response["data"];
-    } else {
-      status = 200;
-      response["message"] = "Category deleted successfully!";
-      response["data"] = updatedDish;
-    }
-    res.status(status).json(response);
-  });
+  Dish.findOneAndUpdate(
+    { "category._id": categoryId },
+    { $pull: { category: { _id: categoryId } } }
+  )
+  .then((updatedDish) => _setResponse(200, "Category deleted successfully!", updatedDish))
+  .catch((error) => _setResponse(500, error, null))
+  .finally(() => _sendResponse(res));
 };
 
 const getAllCategories = function(req, res) {
   Dish.distinct("category.name")
     .exec()
-    .then((categories) => {
-      status = 200;
-      response = categories;
-    })
-    .catch((error) => {
-      status = 500;
-      response["message"] = "Something went wrong!";
-      response["data"] = error;
-    })
-    .finally(() => {
-      res.status(status).json(response);
-    });
+    .then((categories) => _setResponse(200, null, categories))
+    .catch((error) => _setResponse(500, error, null))
+    .finally(() => _sendResponse(res));
 }
 
 module.exports = {

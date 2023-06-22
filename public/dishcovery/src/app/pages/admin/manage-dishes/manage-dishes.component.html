@@ -1,11 +1,15 @@
 <div class="col-md-12 admin-content">
   <div class="row">
 
-    <div class="col-md-12 flex-stretch">
-      <input placeholder="Search dish..."
-        class="mr-3 form-control has-radius">
+    <div class="d-flex flex-grow-1">
+      <form #searchForm="ngForm" (ngSubmit)="searchDish()" class="flex-grow-1 mr-3">
+        <input placeholder="Search dish..."
+          [(ngModel)]="search"
+          [ngModelOptions]="{ standalone: true }"
+          class="form-control has-radius">
+      </form>
       <button routerLink="/admin/dishes/add"
-        class="form-control has-radius">Add Dish</button>
+        class="form-control btn-success has-radius w-150px">+ Add Dish</button>
     </div>
 
     <div class="col-md-12 table-sticky mt-4 ">

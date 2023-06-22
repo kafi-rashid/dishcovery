@@ -51,7 +51,9 @@ button {
 }
 
 .wrapper {
-  min-height: calc(100vh - 80px);
+  min-height: calc(100vh - 0px);
+  margin-bottom: -80px;
+  padding-bottom: 80px;
   white-space: pre-line;
   z-index: 1;
   background-color: #fff;
@@ -91,6 +93,14 @@ button {
 
 .w-100px {
   width: 100px !important;
+}
+
+.w-150px {
+  width: 150px !important;
+}
+
+.w-200px {
+  width: 200px !important;
 }
 
 .w-400px {

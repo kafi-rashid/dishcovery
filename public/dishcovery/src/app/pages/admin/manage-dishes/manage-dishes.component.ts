@@ -20,17 +20,8 @@ export class ManageDishesComponent implements OnInit {
     private _activatedRoute: ActivatedRoute) {}
 
   ngOnInit(): void {
-    this._activatedRoute.queryParams.subscribe(params => {
-      if (params["search"]) {
-        this.search = params["search"];
-        this.getDishes();
-        this.getDishCount();
-      } else {
-        this.search = "";
-        this.getDishCount();
-        this.getDishes();
-      }
-    });
+    this.getDishes();
+    this.getDishCount();
   }
 
   getDishes() {
@@ -89,4 +80,8 @@ export class ManageDishesComponent implements OnInit {
     return list.join(", ");
   }
   
+  searchDish() {
+    this.getDishes();
+    this.getDishCount();
+  }
 }

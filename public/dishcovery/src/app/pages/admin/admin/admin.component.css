@@ -4,11 +4,6 @@
   margin-top: 20px;
 }
 
-.admin-content {
-  display: flex;
-  
-}
-
 .admin-nav {
   flex: 1;
   background-color: rgb(242, 242, 242);

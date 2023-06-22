@@ -156,7 +156,10 @@
           <label class="form-check-label ml-4" for="isPopular">Is Popular</label>
         </div>
 
-        <button type="submit" class="btn btn-success d-block" [disabled]="dishForm.invalid || isLoading">Submit</button>
+        <div class="col-md-12 p-0 pt-3">
+          <button type="submit" class="btn btn-outline-secondary mr-3" (click)="goBack()">Cancel</button>
+          <button type="submit" class="btn btn-success" [disabled]="dishForm.invalid || isLoading">Save</button>
+        </div>
 
       </div>
     </form>

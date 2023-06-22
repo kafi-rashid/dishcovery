@@ -1,55 +1,23 @@
 const mongoose = require("mongoose");
-const { promisify } = require("util");
-const callbackify = require("util").callbackify;
 
 const Dish = mongoose.model("Dish");
 
-let status = 200;
-let response = {
+const response = {
+  status: process.env.HTTP_RESPONSE_SUCCESS_CODE,
   message: null,
   data: null
 }
 
-// CALLBACKIFIERS
+const _setResponse = function(status, message, data = null) {
+  response.status  = parseInt(status, 10);
+  response.message  = message;
+  response.data  = data;
+}
 
-const callbackifyGetAllIngredients = callbackify(function(dishId, pageNumber, pageSize) {
-  return Dish.findById(dishId)
-    .select("ingredients")
-    .lean()
-    .exec();
-});
-
-const callbackifyAddIngredient = callbackify(function(dishId, ingredient) {
-  return Dish.findByIdAndUpdate(dishId, { $push: { ingredients: ingredient } }, { new: true });
-});
-
-const callbackifyGetOneIngredient = callbackify(function(ingredientId) {
-  return Dish.findOne({ "ingredients._id": ingredientId }, { "ingredients.$": 1 });
-});
-
-const callbackifyUpdateIngredients = callbackify(function(ingredientId, updatedIngredient) {
-  return Dish.findOneAndUpdate(
-    { "ingredients._id": ingredientId },
-    { $set: { "ingredients.$": updatedIngredient } }
-  );
-});
-
-const callbackifyDeleteOneIngredient = callbackify(function(ingredientId) {
-  return Dish.findOneAndUpdate(
-    { "ingredients._id": ingredientId },
-    { $pull: { ingredients: { _id: ingredientId } } }
-  );
-});
-
-const callbackifyPatchIngredient = callbackify(function(ingredientId, updatedIngredient) {
-  return Dish.findOneAndUpdate(
-    { "ingredients._id": ingredientId },
-    { $set: updatedIngredient }
-  );
-});
-
-
-// CONTROLLERS
+const _sendResponse = function(res) {
+  res.status(response.status)
+    .json(response);
+}
 
 const getAllIngredients = function(req, res) {
   let pageNumber = 1;
@@ -61,116 +29,96 @@ const getAllIngredients = function(req, res) {
   if (req.query && req.query.pageSize) {
     pageSize = parseInt(req.query.pageSize, 10);
   }
-  callbackifyGetAllIngredients(dishId, pageNumber, pageSize, function(error, dish) {
-    if (error) {
-      status = 404;
-      response["message"] = error;
-      delete response["data"];
-    } else {
+  const _validateDish = function(dish) {
+    return new Promise((resolve, reject) => {
       if (dish.ingredients && dish.ingredients.length > 0) {
-        status = 200;
-        response["message"] = "Total " + dish.ingredients.length + " ingredients found";
-        response["data"] = dish.ingredients;  
-      } else {
-        status = 404;
-        response["message"] = "No ingredient found!";
-        delete response["data"];
+        resolve(dish.ingredients)
       }
-    }
-    res.status(status).json(response);
-  })
+      else {
+        resolve({
+          status: 404,
+          message: "No ingredient found!",
+          data: null
+        })
+      }
+    });
+  }
+
+  Dish.findById(dishId)
+    .select("ingredients")
+    .lean()
+    .exec()
+    .then((dish) => _validateDish(dish))
+    .then((ingredients) => _setResponse(200, "Total " + ingredients.length, ingredients))
+    .catch((error) => _setResponse(500, error, null))
+    .finally(() => _sendResponse(res));
 }
 
 const addIngredient = function(req, res) {
   const dishId = req.params.dishId;
   const newIngredient = req.body;
   console.log(dishId, newIngredient);
-  callbackifyAddIngredient(dishId, newIngredient, function(error, updatedDish) {
-    if (error) {
-      status = 500;
-      response["message"] = error;
-      delete response["data"];
-    } else {
-      status = 200;
-      response["message"] = "Ingredient added successfully!";
-      response["data"] = updatedDish;
-    }
-    res.status(status).json(response);
-  });
+  Dish.findByIdAndUpdate(dishId, { $push: { ingredients: ingredient } }, { new: true })
+    .then((dish) => _setResponse(200, "Ingredient added successfully!", dish))
+    .catch((error) => _setResponse(500, error, null))
+    .finally(() => _sendResponse(res));
 };
 
 const getOneIngredient = function(req, res) {
-  callbackifyGetOneIngredient(req.params.ingredientId, function(error, ingredient) {
-    if (error) {
-      status = 404;
-      response["message"] = error;
-      delete response["data"];
-    } else {
+  const _validateIngredient = function(ingredient) {
+    return new Promise((resolve, reject) => {
       if (ingredient) {
-        status = 200;
-        response["message"] = "Ingredient found!";
-        response["data"] = ingredient;
-      } else {
-        status = 404;
-        response["message"] = "Ingredient not found!";
-        delete response["data"];
+        resolve(ingredient);
       }
-    }
-    res.status(status).json(response);
-  });
+      else {
+        reject({
+          status: 404,
+          message: "Ingredient not found!",
+          data: null
+        })
+      }
+    });
+  }
+  Dish.findOne({ "ingredients._id": req.params.ingredientId }, { "ingredients.$": 1 })
+    .then((ingredient) => _validateIngredient(ingredient))
+    .then((ingredient) => _setResponse(200, "Ingredient found!", ingredient))
+    .catch((error) => _setResponse(500, error, null))
+    .finally(() => _sendResponse(res));
 };
 
 const updateIngredient = function(req, res) {
   const ingredientId = req.params.ingredientId;
   const updatedIngredient = req.body;
-  
-  callbackifyUpdateIngredients(ingredientId, updatedIngredient, function(error, updatedDish) {
-    if (error) {
-      status = 500;
-      response["message"] = error;
-      delete response["data"];
-    } else {
-      status = 200;
-      response["message"] = "Ingredient updated successfully!";
-      response["data"] = updatedDish;
-    }
-    res.status(status).json(response);
-  });
+  Dish.findOneAndUpdate(
+    { "ingredients._id": ingredientId },
+    { $set: { "ingredients.$": updatedIngredient } }
+  )
+  .then((dish) => _setResponse(200, "Ingredient updated successfully!", dish))
+  .catch((error) => _setResponse(500, error, null))
+  .finally(() => _sendResponse(res));
 };
 
 const patchIngredient = function(req, res) {
   const ingredientId = req.params.ingredientId;
   const updatedIngredient = req.body;
-
-  callbackifyPatchIngredient(ingredientId, updatedIngredient, function(error, updatedDish) {
-    if (error) {
-      status = 500;
-      response["message"] = error;
-      delete response["data"];
-    } else {
-      status = 200;
-      response["message"] = "Ingredient patched successfully!";
-      response["data"] = updatedDish;
-    }
-    res.status(status).json(response);
-  });
+  Dish.findOneAndUpdate(
+    { "ingredients._id": ingredientId },
+    { $set: updatedIngredient }
+  )
+  .then((dish) => _setResponse(200, "Ingredient patched successfully!", dish))
+  .catch((error) => _setResponse(500, error, null))
+  .finally(() => _sendResponse(res));
 };
 
 const deleteOneIngredient = function(req, res) {
   const ingredientId = req.params.ingredientId;
-  
-  callbackifyDeleteOneIngredient(ingredientId, function(error, updatedDish) {
-    if (error) {
-      status = 500;
-      response["message"] = error;
-      delete response["data"];
-    } else {
-      status = 200;
-      response["message"] = "Ingredient deleted successfully!";
-      response["data"] = updatedDish;
-    }
-    res.status(status).json(response);
-  });
+  Dish.findOneAndUpdate(
+    { "ingredients._id": ingredientId },
+    { $pull: { ingredients: { _id: ingredientId } } }
+  )
+  .then((dish) => _setResponse(200, "Ingredient deleted successfully!", dish))
+  .catch((error) => _setResponse(500, error, null))
+  .finally(() => _sendResponse(res));
 };
 
 module.exports = {

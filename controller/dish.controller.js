@@ -1,15 +1,16 @@
 const mongoose = require("mongoose");
+require("dotenv").config();
 
-const Dish = mongoose.model("Dish");
+const Dish = mongoose.model(process.env.DB_MODEL);
 
 const response = {
-  status: 200,
+  status: process.env.HTTP_RESPONSE_SUCCESS_CODE,
   message: null,
   data: null
 }
 
 const _setResponse = function(status, message, data = null) {
-  response.status  = status;
+  response.status  = parseInt(status, 10);
   response.message  = message;
   response.data  = data;
 }
@@ -20,15 +21,15 @@ const _sendResponse = function(res) {
 }
 
 const getAllDishes = function(req, res) {
-  let offset = 0;
-  let count = 10;
+  let offset = parseInt(process.env.DB_DEFAULT_OFFSET);
+  let count = parseInt(process.env.DB_DEFAULT_COUNT);
   let query = {};
   if (req.query && req.query.offset) {
     offset = parseInt(req.query.offset, 10);
   }
   if (req.query && req.query.count) {
-    if (req.query.count > 10) {
-      _setResponse(404, "Can not fetch more than 10 dishes!", null);
+    if (req.query.count > count) {
+      _setResponse(process.env.HTTP_RESPONSE_NOT_FOUND_CODE, process.env.DB_DEFAULT_COUNT_EXCEED_MESSAGE, null);
       _sendResponse(res);
       return;
     } else {
@@ -38,112 +39,138 @@ const getAllDishes = function(req, res) {
   if (req.query && req.query.search) {
     query = { "title": { $regex: new RegExp(req.query.search, "i") } }; 
   }
+
+  const _validateDishes = function(dishes) {
+    return new Promise((resolve, reject) => {
+      if (dishes && dishes.length > 0) {
+        resolve(dishes);
+      }
+      else {
+        reject({
+          status: process.env.HTTP_RESPONSE_NOT_FOUND_CODE,
+          message: process.env.HTTP_RESPONSE_NOT_FOUND_MESSAGE,
+          data: null
+        })
+      }
+    })
+  }
+
   return Dish.find(query)
     .skip(offset)
     .limit(count)
     .exec()
-    .then((dish) => {
-      if (dish.length > 0) {
-        _setResponse(200, dish.length + " dish found!", dish);
-      } else {
-        _setResponse(404, "No dish found!", null);
-      }
-    })
-    .catch((error) => {
-      _setResponse(500, error, null);
-    })
-    .finally(() => {
-      _sendResponse(res)
-    })
+    .then(dishes => _validateDishes(dishes))
+    .then((dishes) => _setResponse(process.env.HTTP_RESPONSE_SUCCESS_CODE, process.env.HTTP_RESPONSE_SUCCESS_MESSAGE, dishes))
+    .catch((error) => _setResponse(process.env.HTTP_RESPONSE_INTERNAL_ERROR_CODE, error, null))
+    .finally(() => _sendResponse(res));
 }
 
 const getOneDish = function(req, res) {
-  return Dish.findById(req.params.dishId)
-    .then((dish) => {
+
+  const _validateDish = function(dish) {
+    return new Promise((resolve, reject) => {
       if (dish) {
-        _setResponse(200, "Dish found!", dish);
-      } else {
-        _setResponse(404, "Dish not found!", null);
+        resolve(dish);
       }
-    })
-    .catch((error) => {
-      _setResponse(404, error, null);
-    })
-    .finally(() => {
-      _sendResponse(res)
+      else {
+        reject({
+          status: process.env.HTTP_RESPONSE_NOT_FOUND_CODE, 
+          message: process.env.HTTP_RESPONSE_NOT_FOUND_MESSAGE, 
+          data: null
+        })
+      }
     });
+  }
+
+  return Dish.findById(req.params.dishId)
+    .then((dish) => _validateDish(dish))
+    .then((dish) => _setResponse(process.env.HTTP_RESPONSE_SUCCESS_CODE, process.env.HTTP_RESPONSE_SUCCESS_MESSAGE, dish))
+    .catch((error) => _setResponse(process.env.HTTP_RESPONSE_NOT_FOUND_CODE, error, null))
+    .finally(() => _sendResponse(res));
 }
 
 const addDish = function(req, res) {
   Dish.create(req.body, { new: true })
-    .then((dish) => {
-      _setResponse(200, "Dish has been added!", dish);
-    })
-    .catch((error) => {
-      _setResponse(500, error, null);
-    })
-    .finally(() => {
-      res.status(200).json(response);
-    });
+    .then((dish) => _setResponse(process.env.HTTP_RESPONSE_SUCCESS_CODE, process.env.HTTP_RESPONSE_SUCCESS_MESSAGE, dish))
+    .catch((error) => _setResponse(process.env.HTTP_RESPONSE_INTERNAL_ERROR_CODE, error, null))
+    .finally(() => res.status(process.env.HTTP_RESPONSE_SUCCESS_CODE).json(response));
 }
 
 const updateDish = function(req, res) {
   const dishId = req.params.dishId;
   const dish = req.body;
-  Dish.findByIdAndUpdate(dishId, dish, { new: true })
-    .then((dish) => {
+
+  const _validateDish = function(dish) {
+    return new Promise((resolve, reject) => {
       if (dish) {
-        _setResponse(200, "Dish updated successfully!", dish);
-      } else {
-        _setResponse(404, "Dish not found!", null);
-        _sendResponse(res)
-        return;
+        resolve(dish);
       }
-    })
-    .catch((error) => {
-      _setResponse(500, error, null);
-    })
-    .finally(() => {
-      _sendResponse(res)
+      else {
+        reject({
+          status: process.env.HTTP_RESPONSE_NOT_FOUND_CODE,
+          message: process.env.HTTP_RESPONSE_NOT_FOUND_MESSAGE,
+          data: null
+        })
+      }
     });
+  }
+
+  Dish.findByIdAndUpdate(dishId, dish, { new: true })
+    .then((dish) => _validateDish(dish))
+    .then((dish) =>  _setResponse(process.env.HTTP_RESPONSE_SUCCESS_CODE, process.env.HTTP_RESPONSE_SUCCESS_MESSAGE, dish))
+    .catch((error) => _setResponse(process.env.HTTP_RESPONSE_INTERNAL_ERROR_CODE, error, null))
+    .finally(() => _sendResponse(res));
 };
 
 const patchDish = function(req, res) {
   const dishId = req.params.dishId;
   const dish = req.body;
-  Dish.findByIdAndUpdate(dishId, dish, { new: true })
-    .then((dish) => {
+
+  const _validateDish = function(dish) {
+    return new Promise((resolve, reject) => {
       if (dish) {
-        _setResponse(200, "Dish updated successfully!", dish);
-      } else {
-        _setResponse(404, "Dish not found!",);null;
-        _sendResponse(res)
-        return;
+        resolve(dish);
       }
-    })
-    .catch((error) => {
-      _setResponse(500, error, null);
-    })
-    .finally(() => {
-      _sendResponse(res)
+      else {
+        reject({
+          status: process.env.HTTP_RESPONSE_NOT_FOUND_CODE,
+          message: process.env.HTTP_RESPONSE_NOT_FOUND_MESSAGE,
+          data: null
+        })
+      }
     });
+  }
+
+  Dish.findByIdAndUpdate(dishId, dish, { new: true })
+    .then((dish) => _validateDish(dish))
+    .then((dish) =>  _setResponse(process.env.HTTP_RESPONSE_SUCCESS_CODE, process.env.HTTP_RESPONSE_SUCCESS_MESSAGE, dish))
+    .catch((error) => _setResponse(process.env.HTTP_RESPONSE_INTERNAL_ERROR_CODE, error, null))
+    .finally(() => _sendResponse(res));
 };
 
 const deleteDish = function(req, res) {
-  Dish.findByIdAndDelete(dishId)
-    .then((dish) => {
+  const dishId = req.params.dishId;
+
+  const _validateDish = function(dish) {
+    return new Promise((resolve, reject) => {
       if (dish) {
-        _setResponse(204, "Dish deleted successfully!", dish);
-      } else {
-        _setResponse(404, error, null);
+        resolve(dish);
       }
-    })
-    .catch((error) => {
-      _setResponse(500, error, null);
-    })
-    .finally(() => {
-      _sendResponse(res)
+      else {
+        reject({
+          status: process.env.HTTP_RESPONSE_NOT_FOUND_CODE,
+          message: process.env.HTTP_RESPONSE_NOT_FOUND_MESSAGE,
+          data: null
+        })
+      }
     });
+  }
+
+  Dish.findByIdAndDelete(dishId)
+    .then((dish) => _validateDish(dish))
+    .then((dish) =>  _setResponse(process.env.HTTP_RESPONSE_SUCCESS_CODE, process.env.HTTP_RESPONSE_SUCCESS_MESSAGE, dish))
+    .catch((error) => _setResponse(process.env.HTTP_RESPONSE_INTERNAL_ERROR_CODE, error, null))
+    .finally(() => _sendResponse(res));
 };
 
 const getCount = function(req, res) {
@@ -153,15 +180,9 @@ const getCount = function(req, res) {
   }
   Dish.find(query)
     .count()
-    .then((count) => {
-      _setResponse(200, null, count);
-    })
-    .catch((error) => {
-      _setResponse(500, "Something went wrong!", error);
-    })
-    .finally(() => {
-      _sendResponse(res)
-    });
+    .then((count) => _setResponse(process.env.HTTP_RESPONSE_SUCCESS_CODE, null, count))
+    .catch((error) => _setResponse(process.env.HTTP_RESPONSE_INTERNAL_ERROR_CODE, process.env.HTTP_RESPONSE_INTERNAL_ERROR_MESSAGE, error))
+    .finally(() => _sendResponse(res));
 }
 
 module.exports = {

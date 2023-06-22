@@ -21,10 +21,10 @@ Welcome to Dishcovery App!
 
 ## Installation
 
-cd dishcovery (root directory)
-npm install
-cd public/dishcovery
-npm install
+- cd dishcovery (root directory)
+- npm install
+- cd public/dishcovery
+- npm install
 
 
 ## Import Database

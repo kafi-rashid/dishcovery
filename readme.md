@@ -13,12 +13,6 @@ Welcome to Dishcovery App!
 - **Logged in User**: Only logged in users can see full instructions for the dish
 
 
-## Technologies Used
-
-- **Frontend**: Angular (Version 16)
-- **Backend**: Node.JS, Express, MongoDB
-
-
 ## Installation
 
 - cd dishcovery (root directory)

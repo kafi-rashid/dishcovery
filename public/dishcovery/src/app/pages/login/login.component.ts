@@ -33,7 +33,7 @@ export class LoginComponent {
           localStorage.setItem("isLoggedIn", "true");
           localStorage.setItem("user", JSON.stringify(response.data));
           this._authService.setAuthState(true);
-          this._router.navigate(["/admin"]);
+          this._router.navigate(["/"]);
           this.isLoginFailed = false;
         } else {
           this.isLoginFailed = true;

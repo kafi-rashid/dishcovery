@@ -35,6 +35,11 @@
           </div>
 
           <div class="form-group col-md-12">
+            <label for="title">Image</label>
+            <input class="form-control" type="file" accept="image/*" (change)="onFileSelected($event)">
+          </div>
+
+          <div class="form-group col-md-12">
             <label for="instructions">Instructions</label>
             <textarea class="form-control" id="instructions" rows="4" placeholder="Enter the dish instructions" formControlName="instructions"></textarea>
             <small class="form-text text-muted" *ngIf="dishForm.get('instructions')?.invalid && (dishForm.get('instructions')?.dirty || dishForm.get('instructions')?.touched)">
@@ -59,14 +64,6 @@
           </div>
 
           <div class="form-group col-md-12">
-            <label for="image">Image URL</label>
-            <input type="text" class="form-control" id="image" placeholder="Enter the dish image URL" formControlName="image">
-            <small class="form-text text-muted" *ngIf="dishForm.get('image')?.invalid && (dishForm.get('image')?.dirty || dishForm.get('image')?.touched)">
-              Image URL is required.
-            </small>
-          </div>
-
-          <div class="form-group col-md-12">
             <label for="tags">Tags</label>
             <input type="text" class="form-control" id="tags" placeholder="Enter tags for the dish (separated by commas)" formControlName="tags">
             <small class="form-text text-muted" *ngIf="dishForm.get('tags')?.invalid && (dishForm.get('tags')?.dirty || dishForm.get('tags')?.touched)">
@@ -84,7 +81,6 @@
           <div class="form-group col-md-12" *ngFor="let ingredient of ingredients.controls; let i = index;">
             <div [formGroupName]="i" class="d-flex">
               <div class="form-group m-0 p-0 mr-3 flex-grow-1">
-                <!-- <label for="ingredientName{{i}}">Ingredient Name</label> -->
                 <input type="text" class="form-control" id="ingredientName{{i}}" placeholder="Ingredient name" formControlName="name">
                 <small class="form-text text-muted" *ngIf="ingredient.get('name')?.invalid && (ingredient.get('name')?.dirty || ingredient.get('name')?.touched)">
                   Ingredient Name is required.
@@ -92,7 +88,6 @@
               </div>
 
               <div class="form-group m-0 p-0 mr-3 flex-grow-1">
-                <!-- <label for="ingredientDescription{{i}}">Ingredient Description</label> -->
                 <input type="text" class="form-control" id="ingredientDescription{{i}}" placeholder="Description" formControlName="description">
                 <small class="form-text text-muted" *ngIf="ingredient.get('description')?.invalid && (ingredient.get('description')?.dirty || ingredient.get('description')?.touched)">
                   Ingredient Description is required.
@@ -158,7 +153,7 @@
 
         <div class="col-md-12 p-0 pt-3">
           <button class="btn btn-outline-secondary mr-3" (click)="goBack($event)">Cancel</button>
-          <button class="btn btn-danger mr-3" (click)="confirmDelete($event)">Delete</button>
+          <button class="btn btn-danger mr-3" *ngIf="isUpdating" (click)="confirmDelete($event)">Delete</button>
           <button type="submit" class="btn btn-success" [disabled]="dishForm.invalid || isLoading">Save</button>
         </div>
 

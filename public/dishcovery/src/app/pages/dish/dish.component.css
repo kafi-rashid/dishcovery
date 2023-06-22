@@ -73,6 +73,21 @@
   cursor: pointer;
 }
 
+.must-logged-in {
+  position: relative;
+}
+
+.must-logged-in::before {
+  content: "";
+  height: 70px;
+  width: 100%;
+  position: absolute;
+  top: -80px;
+  left: 0;
+  /* border: thin dashed red; */
+  background: linear-gradient(to bottom, transparent 0%, #ffffffa2 50%, #fff 100%);
+}
+
 @media screen and (max-width: 768px) {
   .dish-image {
     text-align: center;

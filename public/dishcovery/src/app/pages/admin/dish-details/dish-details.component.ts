@@ -17,6 +17,7 @@ export class DishDetailsComponent implements OnInit {
   dishId: string = "";
   isLoading: boolean = false;
   isUpdating: boolean = false;
+  selectedFile!: File;
 
   constructor(private _formBuilder: FormBuilder,
     private _activatedRoute: ActivatedRoute,
@@ -33,7 +34,7 @@ export class DishDetailsComponent implements OnInit {
       instructions: ['', Validators.required],
       cookingTime: ['', Validators.required],
       servings: ['', Validators.required],
-      image: ['', Validators.required],
+      image: [''],
       category: this._formBuilder.array([]),
       tags: ['', Validators.required],
       hitCount: [''],
@@ -95,8 +96,30 @@ export class DishDetailsComponent implements OnInit {
       }
     });
   }
-  
+
+  onFileSelected(event: any) {
+    this.selectedFile = event.target.files[0];
+  }
+
   onSubmit() {
+    if (this.dishForm.invalid) {
+      return;
+    }
+    this.dish = this.dishForm.value;
+    if (this.selectedFile) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        const base64Image = e.target.result;
+        this.dishForm.patchValue({ image: base64Image });
+        this.saveDish();
+      };
+      reader.readAsDataURL(this.selectedFile);
+    } else {
+      this.saveDish();
+    }
+  }
+
+  saveDish() {
     if (this.dishForm.invalid) {
       return;
     }

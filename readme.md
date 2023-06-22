@@ -22,3 +22,41 @@ Welcome to Dishcovery App! This application allows users to explore and discover
 ## Installation
 
 1. Clone this repository to your local machine.
+2. Install the required dependencies for the frontend and backend.
+cd dishcovery-app
+cd frontend
+npm install
+cd ..
+cd backend
+npm install
+
+
+3. Configure the environment variables.
+
+- Create a `.env` file in the `backend` directory and provide the necessary environment variables like database connection URL, API keys, etc.
+
+4. Run the development servers.
+
+- For the frontend, run the following command from the `frontend` directory:
+
+
+
+- For the backend, run the following command from the `backend` directory:
+
+5. Access the Dishcovery App.
+
+- Open your browser and visit `http://localhost:3000` to access the Dishcovery App.
+
+## Contributing
+
+We welcome contributions from everyone! If you have any ideas, suggestions, or bug reports, please open an issue or submit a pull request. Make sure to follow the [contribution guidelines](CONTRIBUTING.md) when contributing to this project.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE). Feel free to use, modify, and distribute the code as per the terms of the license.
+
+## Acknowledgments
+
+- The Dishcovery App was inspired by the love for exploring different cuisines and the joy of sharing delightful food experiences with others. We would like to thank all the contributors and the open-source community for their valuable contributions and support.
+- Special thanks to the developers and maintainers of the libraries, frameworks, and APIs used in this project.
+

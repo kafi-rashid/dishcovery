@@ -90,16 +90,42 @@ const getOneDish = function(req, res) {
 }
 
 const addDish = function(req, res) {
-  Dish.create(req.body, { new: true })
+  const dish = req.body;
+  if(dish._id.length < 1) {
+    delete dish._id;
+  }
+  dish.ingredients.forEach((ingredient) => {
+    if (ingredient._id.length < 1) {
+      delete ingredient._id;
+    }
+  });
+  dish.category.forEach((cat) => {
+    if (cat._id.length < 1) {
+      delete cat._id;
+    }
+  });
+  Dish.create(dish, { new: true })
     .then((dish) => _setResponse(process.env.HTTP_RESPONSE_SUCCESS_CODE, process.env.HTTP_RESPONSE_SUCCESS_MESSAGE, dish))
     .catch((error) => _setResponse(process.env.HTTP_RESPONSE_INTERNAL_ERROR_CODE, error, null))
-    .finally(() => res.status(process.env.HTTP_RESPONSE_SUCCESS_CODE).json(response));
+    .finally(() => _sendResponse(res));
 }
 
 const updateDish = function(req, res) {
   const dishId = req.params.dishId;
   const dish = req.body;
-
+  if(dish._id.length < 1) {
+    delete dish._id;
+  }
+  dish.ingredients.forEach((ingredient) => {
+    if (ingredient._id.length < 1) {
+      delete ingredient._id;
+    }
+  });
+  dish.category.forEach((cat) => {
+    if (cat._id.length < 1) {
+      delete cat._id;
+    }
+  });
   const _validateDish = function(dish) {
     return new Promise((resolve, reject) => {
       if (dish) {
@@ -125,7 +151,19 @@ const updateDish = function(req, res) {
 const patchDish = function(req, res) {
   const dishId = req.params.dishId;
   const dish = req.body;
-
+  if(dish._id.length < 1) {
+    delete dish._id;
+  }
+  dish.ingredients.forEach((ingredient) => {
+    if (ingredient._id.length < 1) {
+      delete ingredient._id;
+    }
+  });
+  dish.category.forEach((cat) => {
+    if (cat._id.length < 1) {
+      delete cat._id;
+    }
+  });
   const _validateDish = function(dish) {
     return new Promise((resolve, reject) => {
       if (dish) {

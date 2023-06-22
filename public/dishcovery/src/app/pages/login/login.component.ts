@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { Response } from 'src/app/shared/models/dishes.model';
 import { User } from 'src/app/shared/models/user.model';
 import { AuthService } from 'src/app/shared/services/auth.service';
+import { environment } from 'src/environments/environment.development';
 
 @Component({
   selector: 'app-login',
@@ -11,6 +12,7 @@ import { AuthService } from 'src/app/shared/services/auth.service';
 })
 export class LoginComponent {
 
+  environment = environment;
   username!: string;
   password!: string;
   isLoginFailed: boolean = false;

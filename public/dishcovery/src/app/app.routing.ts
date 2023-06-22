@@ -10,6 +10,7 @@ import { AdminComponent } from './pages/admin/admin/admin.component';
 import { ManageDishesComponent } from './pages/admin/manage-dishes/manage-dishes.component';
 import { DishDetailsComponent } from './pages/admin/dish-details/dish-details.component';
 import { UsersComponent } from './pages/admin/users/users.component';
+import { UserDetailsComponent } from './pages/admin/user-details/user-details.component';
 
 export const AppRoutes: Routes = [
   {
@@ -61,6 +62,10 @@ export const AppRoutes: Routes = [
       {
         path: 'users',
         component: UsersComponent
+      },
+      {
+        path: 'users/:userId',
+        component: UserDetailsComponent
       }
     ]
   },

@@ -22,6 +22,7 @@ import { ManageDishesComponent } from './pages/admin/manage-dishes/manage-dishes
 import { DishDetailsComponent } from './pages/admin/dish-details/dish-details.component';
 import { AdminComponent } from './pages/admin/admin/admin.component';
 import { UsersComponent } from './pages/admin/users/users.component';
+import { UserDetailsComponent } from './pages/admin/user-details/user-details.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { UsersComponent } from './pages/admin/users/users.component';
     ManageDishesComponent,
     DishDetailsComponent,
     AdminComponent,
-    UsersComponent
+    UsersComponent,
+    UserDetailsComponent
   ],
   imports: [
     BrowserModule,

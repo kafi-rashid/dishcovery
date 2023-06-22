@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Dish, Response } from 'src/app/shared/models/dishes.model';
 import { CategoryService } from 'src/app/shared/services/category.service';
 import { DishService } from 'src/app/shared/services/dish.service';
+import { UserService } from 'src/app/shared/services/user.service';
 
 @Component({
   selector: 'app-home',
@@ -13,17 +14,20 @@ export class HomeComponent implements OnInit {
   dishes: Dish[] = new Array<Dish>();
   activeIndex: number = 0;
   dishCount: number = 0;
+  userCount: number = 0;
   categories: string[] = [];
   offset: number = 0;
   count: number = 8;
 
   constructor(private _dishService: DishService,
-    private _categoryService: CategoryService) {}
+    private _categoryService: CategoryService,
+    private _userService: UserService) {}
 
   ngOnInit(): void {
     this.getDishes();
     this.getDishCount();
     this.getCategories();
+    this.getUserCount();
     setInterval(() => {
       this.activeIndex = this.activeIndex + 1;
       if (this.activeIndex >= this.dishes.length) {
@@ -48,6 +52,17 @@ export class HomeComponent implements OnInit {
     this._dishService.getDishCount("").subscribe({
       next: (response: any) => {
         this.dishCount = response.data;
+      },
+      error: (error) => {
+        console.log("Component: Dishes", error);
+      }
+    });
+  }
+
+  getUserCount() {
+    this._userService.getUserCount().subscribe({
+      next: (response: any) => {
+        this.userCount = response.data;
       },
       error: (error) => {
         console.log("Component: Dishes", error);

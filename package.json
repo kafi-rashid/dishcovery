@@ -6,6 +6,7 @@
   "scripts": {
     "startFrontend": "cd public/dishcovery && ng serve",
     "startBackend": "node app.js",
+    "start": "npm run startFrontend | npm run startBackend",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Saidul Islam",

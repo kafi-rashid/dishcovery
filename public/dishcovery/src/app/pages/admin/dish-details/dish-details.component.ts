@@ -1,7 +1,7 @@
 import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Dish, Response } from 'src/app/shared/models/dishes.model';
 import { DishService } from 'src/app/shared/services/dish.service';
 
@@ -16,11 +16,13 @@ export class DishDetailsComponent implements OnInit {
   dish: Dish = new Dish();
   dishId: string = "";
   isLoading: boolean = false;
+  isUpdating: boolean = false;
 
   constructor(private _formBuilder: FormBuilder,
     private _activatedRoute: ActivatedRoute,
     private _dishService: DishService,
-    private _location: Location) {
+    private _location: Location,
+    private _router: Router) {
 
     this.dishForm = this._formBuilder.group({
       _id: [''],
@@ -44,7 +46,11 @@ export class DishDetailsComponent implements OnInit {
   ngOnInit() {
     this.dishId = this._activatedRoute.snapshot.params["dishId"];
     if (this.dishId) {
+      this.isUpdating = true;
       this.getDish(this.dishId);
+    }
+    else {
+      this.isUpdating = false;
     }
   }
 
@@ -94,16 +100,37 @@ export class DishDetailsComponent implements OnInit {
     if (this.dishForm.invalid) {
       return;
     }
-    
-    // Retrieve the form values and assign them to the dish object
-    this.dish = this.dishForm.value;
-    
-    // Perform further actions with the dish object, such as sending it to an API
+    this.dish = this.dishForm.value;    
+    if (this.isUpdating === false) {
+      this._dishService.addDish(this.dish).subscribe({
+        next: (response: Response) => {
 
-    console.log(this.dish);
-    
-    // Reset the form
-    // this.dishForm.reset();
+        },
+        error: (error) => {
+          console.log(error);    
+          alert("Something went wrong!");    
+        },
+        complete: () => {
+          alert("Dish has been added!");
+          this._router.navigate(["/admin/dishes"]);
+        }
+      })
+    }
+    else {
+      this._dishService.fullUpdateDish(this.dish).subscribe({
+        next: (response: Response) => {
+
+        },
+        error: (error) => {
+          console.log(error);       
+          alert("Something went wrong!"); 
+        },
+        complete: () => {
+          alert("Dish has been updated!");
+          this._router.navigate(["/admin/dishes"]);          
+        }
+      })
+    }    
   }
 
   addIngredient() {
@@ -131,8 +158,32 @@ export class DishDetailsComponent implements OnInit {
     this.category.removeAt(index);
   }
 
-  goBack() {
+  goBack(event: any) {
+    event.preventDefault();
     this._location.back();
+  }
+
+  confirmDelete(event: any) {
+    event.preventDefault();
+    if (confirm("Are you sure you want to delete this dish?")) {
+      this.delete();
+    } else {
+
+    }
+  }
+
+  delete() {
+    this._dishService.deleteDish(this.dishForm.value).subscribe({
+      next: (response: Response) => {
+      
+      },
+      error: (error) => {
+
+      },
+      complete: () => {
+        this._location.back();
+      }
+    })
   }
 
 }

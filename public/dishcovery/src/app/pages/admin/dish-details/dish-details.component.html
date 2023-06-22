@@ -157,7 +157,8 @@
         </div>
 
         <div class="col-md-12 p-0 pt-3">
-          <button type="submit" class="btn btn-outline-secondary mr-3" (click)="goBack()">Cancel</button>
+          <button class="btn btn-outline-secondary mr-3" (click)="goBack($event)">Cancel</button>
+          <button class="btn btn-danger mr-3" (click)="confirmDelete($event)">Delete</button>
           <button type="submit" class="btn btn-success" [disabled]="dishForm.invalid || isLoading">Save</button>
         </div>
 

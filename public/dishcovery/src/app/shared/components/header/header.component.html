@@ -15,10 +15,6 @@
         routerLinkActive="active">
         Dishes
       </button>
-      <button routerLink="/about"
-        routerLinkActive="active">
-        About
-      </button>
     </div>
   </div>
   <div>
@@ -31,6 +27,10 @@
     </form>
   </div>
   <div class="auth">
+    <p *ngIf="isLoggedIn"
+      class="mr-4">
+      Hello {{ user.fullName }}!
+    </p>
     <button *ngIf="isLoggedIn"
       routerLink="/admin"
       class="mr-3"

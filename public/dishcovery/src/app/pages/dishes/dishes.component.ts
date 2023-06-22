@@ -15,6 +15,7 @@ export class DishesComponent implements OnInit {
   offset: number = 0;
   count: number = 8;
   search: string = "";
+  isLoading: boolean = true;
 
   constructor(private _dishService: DishService,
     private _activatedRoute: ActivatedRoute) {}
@@ -37,13 +38,15 @@ export class DishesComponent implements OnInit {
     let query: string = "?offset=" + this.offset + "&count=" + this.count + "&search=" + this.search;
     this._dishService.getDishes(query).subscribe({
       next: (response: Response) => {
-        this.dishes = response.data;    
+        this.dishes = response.data;
+        this.isLoading = false; 
         window.scrollTo({
           top: 0,
           behavior: 'smooth'
         });
       },
       error: (error) => {
+        this.isLoading = false; 
         console.log("Component: Dishes", error);
       }
     });

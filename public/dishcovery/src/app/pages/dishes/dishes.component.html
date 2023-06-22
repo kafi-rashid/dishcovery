@@ -9,7 +9,8 @@
     </ng-template>
   </div>  
 
-  <div class="col-md-12 p-0">
+  <div class="col-md-12 p-0"
+    *ngIf="isLoading || (dishes && dishes.length > 0); else noResult">
     <div class="row">
       <div *ngFor="let dish of dishes" class="col-xs-6 col-sm-6 col-md-4 col-lg-3 mb-4"> 
         <app-dish-card
@@ -19,7 +20,17 @@
     </div>
   </div>
 
-  <div class="col-md-12 text-center mt-4">
+  <ng-template #noResult>
+    <div class="col-md-12 no-result">
+      <p>
+        Nothing found!<br/><br/>
+        Please come back later,<br/>you may find something interesting.
+      </p>
+    </div>
+  </ng-template>
+
+  <div class="col-md-12 text-center mt-4"
+    *ngIf="dishes && dishes.length > 0 && dishCount > count">
     <button class="btn-warning mr-3"
       (click)="prev()"
       [disabled]="disablePrev()">

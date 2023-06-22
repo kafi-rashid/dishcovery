@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const { promisify } = require("util");
 require("dotenv").config();
 
-const User = mongoose.model("User");
+const User = mongoose.model(process.env.DB_MODEL_USER);
 
 const response = {
   status: process.env.HTTP_RESPONSE_SUCCESS_CODE,
@@ -24,6 +24,20 @@ const _sendResponse = function(res) {
 }
 
 const getUsers = function(req, res) {
+  let offset = parseInt(process.env.DB_DEFAULT_OFFSET);
+  let count = parseInt(process.env.DB_DEFAULT_COUNT);
+  if (req.query && req.query.offset) {
+    offset = parseInt(req.query.offset, 10);
+  }
+  if (req.query && req.query.count) {
+    if (req.query.count > count) {
+      _setResponse(process.env.HTTP_RESPONSE_NOT_FOUND_CODE, process.env.DB_DEFAULT_COUNT_EXCEED_MESSAGE, null);
+      _sendResponse(res);
+      return;
+    } else {
+      count = parseInt(req.query.count, 10);
+    }
+  }
   const _validateUsers = function(users) {
     return new Promise((resolve, reject) => {
       if (users && users.length > 0) {
@@ -40,10 +54,37 @@ const getUsers = function(req, res) {
   }
 
   User.find()
+    .skip(offset)
+    .limit(count)
     .exec()
     .then((users) => _validateUsers(users))
     .then((validUsers) => _setResponse(process.env.HTTP_RESPONSE_SUCCESS_CODE, process.env.HTTP_RESPONSE_SUCCESS_MESSAGE, validUsers)) 
     .catch((error) => _setResponse(process.env.HTTP_RESPONSE_INTERNAL_ERROR_CODE, process.env.HTTP_RESPONSE_INTERNAL_ERROR_MESSAGE, error))
+    .finally(() => _sendResponse(res));
+}
+
+const getOneUser = function(req, res) {
+  const userId = req.params.userId;
+  const _validateUser = function(user) {
+    return new Promise((resolve, reject) => {
+      if (user) {
+        resolve(user);
+      }
+      else {
+        reject({
+          status: process.env.HTTP_RESPONSE_NOT_FOUND_CODE,
+          message: process.env.HTTP_RESPONSE_NOT_FOUND_MESSAGE,
+          data: null
+        })
+      }
+    });
+  }
+
+  User.findById(userId)
+    .exec()
+    .then((user) => _validateUser(user))
+    .then((user) => _setResponse(process.env.HTTP_RESPONSE_SUCCESS_CODE, process.env.HTTP_RESPONSE_SUCCESS_MESSAGE, user))
+    .catch((error) => _setResponse(process.env.HTTP_RESPONSE_NOT_FOUND_CODE, error, null))
     .finally(() => _sendResponse(res));
 }
 
@@ -150,8 +191,44 @@ const authUser = function(req, res) {
     .finally(() => _sendResponse(res))
 }
 
+const getUserCount = function(req, res) {
+  User.find()
+    .count()
+    .then((count) => _setResponse(process.env.HTTP_RESPONSE_SUCCESS_CODE, null, count))
+    .catch((error) => _setResponse(process.env.HTTP_RESPONSE_INTERNAL_ERROR_CODE, process.env.HTTP_RESPONSE_INTERNAL_ERROR_MESSAGE, error))
+    .finally(() => _sendResponse(res));
+}
+
+const deleteUser = function(req, res) {
+  const userId = req.params.userId;
+
+  const _validateUser = function(user) {
+    return new Promise((resolve, reject) => {
+      if (user) {
+        resolve(user);
+      }
+      else {
+        reject({
+          status: process.env.HTTP_RESPONSE_NOT_FOUND_CODE,
+          message: process.env.HTTP_RESPONSE_NOT_FOUND_MESSAGE,
+          data: null
+        })
+      }
+    });
+  }
+
+  User.findByIdAndDelete(userId)
+    .then((user) => _validateUser(user))
+    .then((user) =>  _setResponse(process.env.HTTP_RESPONSE_SUCCESS_CODE, process.env.HTTP_RESPONSE_SUCCESS_MESSAGE, user))
+    .catch((error) => _setResponse(process.env.HTTP_RESPONSE_INTERNAL_ERROR_CODE, error, null))
+    .finally(() => _sendResponse(res));
+};
+
 module.exports = {
   createUser,
   getUsers,
-  authUser
+  deleteUser,
+  getOneUser,
+  authUser,
+  getUserCount
 }

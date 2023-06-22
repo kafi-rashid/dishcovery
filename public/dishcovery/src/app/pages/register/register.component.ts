@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { User } from 'src/app/shared/models/user.model';
 import { UserService } from 'src/app/shared/services/user.service';
 
 @Component({
@@ -46,7 +47,7 @@ export class RegisterComponent implements OnInit {
     if (this.registerForm.invalid) {
       return;
     }
-    const user = {
+    const user: User = {
       fullName: this.registerForm.get("fullName")?.value,
       username: this.registerForm.get("username")?.value,
       password: this.registerForm.get("password")?.value
@@ -55,7 +56,9 @@ export class RegisterComponent implements OnInit {
     this._userService.register(user).subscribe({
       next: (response: any) => {
         if (response.status === 200) {
-          this.message = "Signing up successful! Logging in...";
+          this.message = "Signing up successful!";
+          alert("Signing up successful! Please log in to continue.")
+          this._router.navigate(["/login"]);
         } else {
           this.message = "Something went wrong!";
         }

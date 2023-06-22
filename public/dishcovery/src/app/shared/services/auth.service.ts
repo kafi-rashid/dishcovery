@@ -1,15 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { User } from '../models/user.model';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, of } from 'rxjs';
 import { Response } from '../models/dishes.model';
+import { environment } from 'src/environments/environment.development';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  baseUrl: string = "http://localhost:3000/auth";
+  baseUrl: string = environment.baseUrlBackend + "auth";
   private loggedInStatus = new BehaviorSubject<boolean>(this.getLoggedInStatusFromLocalStorage());
 
   constructor(private _http: HttpClient) {}
@@ -20,7 +21,7 @@ export class AuthService {
 
   setAuthState(state: boolean) {
     localStorage.setItem("isLoggedIn", state.toString());
-    this.loggedInStatus.next(state); // Emit the updated status
+    this.loggedInStatus.next(state);
   }
 
   getLoggedInStatus(): Observable<boolean> {
@@ -30,5 +31,15 @@ export class AuthService {
   private getLoggedInStatusFromLocalStorage(): boolean {
     const status = localStorage.getItem("isLoggedIn");
     return status === "true";
+  }
+
+  getUser(): Observable<User> {
+    const user = localStorage.getItem("user");
+    if (user) {
+      return of(JSON.parse(user));
+    }
+    else {
+      return of(new User())
+    }
   }
 }

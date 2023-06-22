@@ -1,0 +1,42 @@
+<div class="col-md-12 admin-content dish-details">
+  <div class="row">
+
+    <div class="mb-4">
+      <p class="title">User Details</p>
+    </div>
+
+    <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="dish-form row col-md-12 p-0">
+
+      <div class="col-md-6">
+        <div class="row">
+
+          <div class="form-group col-md-12">
+            <label for="fullName">Full name</label>
+            <input type="text" class="form-control" id="fullName" placeholder="Enter full name" formControlName="fullName">
+            <small class="form-text text-muted" *ngIf="userForm.get('fullName')?.invalid && (userForm.get('fullName')?.dirty || userForm.get('fullName')?.touched)">
+              fullName is required.
+            </small>
+          </div>
+
+          <div class="form-group col-md-12">
+            <label for="username">Username</label>
+            <input type="text" class="form-control" id="username" placeholder="Enter the username" formControlName="username">
+            <small class="form-text text-muted" *ngIf="userForm.get('username')?.invalid && (userForm.get('username')?.dirty || userForm.get('username')?.touched)">
+              Username is required.
+            </small>
+          </div>
+          
+        </div>
+
+        <div class="col-md-12 p-0 pt-3">
+          <button class="btn btn-outline-secondary mr-3" (click)="goBack($event)">Cancel</button>
+          <button class="btn btn-danger mr-3" (click)="confirmDelete($event)">Delete</button>
+          <button type="submit" class="btn btn-success" [disabled]="userForm.invalid || isLoading">Save</button>
+        </div>
+
+      </div>
+    </form>
+
+  </div>
+
+</div>

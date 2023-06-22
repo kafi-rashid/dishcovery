@@ -1,1 +1,49 @@
-<p>users works!</p>
+<div class="col-md-12 admin-content">
+  <div class="row">
+
+    <div class="d-flex flex-grow-1">
+      <button routerLink="/admin/users/add"
+        class="form-control btn-success has-radius w-150px">+ Add User</button>
+    </div>
+
+    <div class="col-md-12 table-sticky mt-4 ">
+      <table class="table mt-5">
+        <thead>
+          <tr>
+            <th width="50">SN.</th>
+            <th>Full Name</th>
+            <th>Username</th>
+            <th class="text-right">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of users; let i = index;">
+            <td>{{ i + 1 + offset }}</td>
+            <td class="font-weight-bold">{{ user.fullName }}</td>
+            <td class="font-weight-bold">{{ user.username }}</td>
+            <td class="text-right">
+              <button class="btn btn-sm btn-danger"
+                routerLink="/admin/users/{{ user._id }}">
+                Details
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="col-md-12 text-center mt-4">
+      <button class="btn-warning mr-3"
+        (click)="prev()"
+        [disabled]="disablePrev()">
+        ←&nbsp;&nbsp;&nbsp;Previous
+      </button>
+      <button class="btn-warning"
+        (click)="next()"
+        [disabled]="disableNext()">
+        Next&nbsp;&nbsp;&nbsp;→
+      </button>
+    </div>
+
+  </div>
+</div>
